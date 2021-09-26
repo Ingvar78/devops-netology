@@ -79,3 +79,12 @@ git config --global user.email
 4. файлы переопределения 
 5. конфигурационные файлы CLI
 
+git remote -v
+```
+bitbucket	https://Ingvar78@bitbucket.org/Ingvar78/devops-netology.git (fetch)
+bitbucket	https://Ingvar78@bitbucket.org/Ingvar78/devops-netology.git (push)
+gitlab	https://gitlab.com/Ingvar78/devops-netology.git (fetch)
+gitlab	https://gitlab.com/Ingvar78/devops-netology.git (push)
+origin	https://github.com/Ingvar78/devops-netology.git (fetch)
+origin	https://github.com/Ingvar78/devops-netology.git (push)
+```
