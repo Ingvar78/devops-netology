@@ -41,3 +41,35 @@ index 0000000..e69de29
 Add fix
 
 PyCharm
+
+Fix two
+
+'''
+git cat README.md
+git commit a -m "Добавление bb + gitlab"
+git commit -a -m "Добавление bb + gitlab"
+git tag v0.0
+git push origin main 
+git push -u bitbucket main
+git push -u gitlab main
+git tag 
+git push origin main --tags 
+git push -u bitbucket main --tags 
+git push -u gitlab main --tags 
+git tag -a v0.1 -m "annotation for tag"
+git tag 
+git show v0.1 
+git status 
+git push origin main --tags 
+git push -u bitbucket main --tags 
+git push -u gitlab main --tags 
+git log  
+git checkout 38e69dcc482d711fd3be3008edc32d81feaf3189
+git log 
+git switch -c fix
+git push -u origin fix
+git commit -a -m "Fix"
+git push -u origin
+git log 
+'''
+
