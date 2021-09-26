@@ -39,3 +39,5 @@ index 0000000..e69de29
 5. конфигурационные файлы CLI
 
 Add fix
+
+PyCharm
