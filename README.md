@@ -125,3 +125,9 @@ gitlab	https://gitlab.com/Ingvar78/devops-netology.git (push)
 origin	https://github.com/Ingvar78/devops-netology.git (fetch)
 origin	https://github.com/Ingvar78/devops-netology.git (push)
 '''
+
+##Домашнее задание к занятию «2.3. Ветвления в Git»
+
+история создания ветвления:
+~/branching/2.3.Ветвления\ в\ Git.txt
+
