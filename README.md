@@ -1,133 +1,113 @@
-# devops-netologyOn branch main
-$ git status
-Your branch is up to date with 'origin/main'.
+# devops-netology 
 
-nothing to commit, working tree clean
 
-$ git diff
-diff --git a/README.md b/README.md
-index 647b370..e57076a 100644
---- a/README.md
-+++ b/README.md
-@@ -1 +1,4 @@
--# devops-netology
-\ No newline at end of file
-+# devops-netologyOn branch main
-+Your branch is up to date with 'origin/main'.
-+
-+nothing to commit, working tree clean
+### Домашнее задание к занятию «2.4. Инструменты Git»
+Для выполнения заданий в этом разделе давайте склонируем репозиторий с исходным кодом терраформа https://github.com/hashicorp/terraform
 
-$ git status
-On branch main
-Your branch is ahead of 'origin/main' by 1 commit.
-  (use "git push" to publish your local commits)
+В виде результата напишите текстом ответы на вопросы и каким образом эти ответы были получены.
 
-nothing to commit, working tree clean
+1. Найдите полный хеш и комментарий коммита, хеш которого начинается на aefea.
 
-git add .gitignore
-git diff --staged
+<pre>~/Documents/terraform (main)$ git log aefea 
+<font color="#C4A000">commit aefead2207ef7e2aa5dc81a34aedf0cad4c32545</font>
+Author: Alisdair McDiarmid &lt;alisdair@users.noreply.github.com&gt;
+Date:   Thu Jun 18 10:29:58 2020 -0400
 
-Newdiff --git a/.gitignore b/.gitignore
-new file mode 100644
-index 0000000..e69de29
+    Update CHANGELOG.md
+</pre>
 
-/terraform/.gitignore
 
-git log 
-commit b7d5074ceaa9992019e2c06c5f94a264beb377f7
-Author: Igor Vishenkov <igor@********.ru>
-Date:   Mon Sep 20 23:36:25 2021 +0300
+2. Какому тегу соответствует коммит 85024d3?
 
-    Moved and deleted
+<pre>~/Documents/terraform (main)$ git show 85024d3
+<font color="#C4A000">commit 85024d3100126de36331c6982bfaac02cdab9e76 (</font><font color="#FCE94F"><b>tag: v0.12.23</b></font><font color="#C4A000">)</font>
+Author: tf-release-bot &lt;terraform@hashicorp.com&gt;
+Date:   Thu Mar 5 20:56:10 2020 +0000
 
-commit 38e69dcc482d711fd3be3008edc32d81feaf3189
-Author: Igor Vishenkov <igor@********.ru>
-Date:   Mon Sep 20 23:33:19 2021 +0300
+    v0.12.23
 
-    Prepare to delete and move
+</pre>
 
-commit 5d148920d8c809b89c184d47615c2e0e7ad20166
-Author: Igor Vishenkov <igor@********.ru>
-Date:   Mon Sep 20 23:31:14 2021 +0300
+3. Сколько родителей у коммита b8d720? Напишите их хеши.
 
-    Added gitignore
+<pre>~/Documents/terraform (main)$ git show --oneline b8d720^ 
+<font color="#C4A000">56cd7859e</font> Merge pull request #23857 from hashicorp/cgriggs01-stable
+</pre>
 
-commit af020a031807466c4f88232ec1ab7b5167bc8efd
-Author: Igor Vishenkov <igor@********.ru>
-Date:   Mon Sep 20 23:15:29 2021 +0300
 
-    Second commit
+<cut>
 
-commit 95777d49679b31524cd5a60f344e6606ec8debf4
-Author: Igor Vishenkov <igor@********.ru>
-Date:   Mon Sep 20 23:14:08 2021 +0300
+<pre>~/Documents/terraform (main)$ git log b8d720 --graph 
+*   <font color="#C4A000">commit b8d720f8340221f2146e4e4870bf2ee0bc48f2d5</font>
+<font color="#CC0000">|</font><font color="#4E9A06">\</font>  Merge: 56cd7859e 9ea88f22f
+<font color="#CC0000">|</font> <font color="#4E9A06">|</font> Author: Chris Griggs &lt;cgriggs@hashicorp.com&gt;
+<font color="#CC0000">|</font> <font color="#4E9A06">|</font> Date:   Tue Jan 21 17:45:48 2020 -0800
+<font color="#CC0000">|</font> <font color="#4E9A06">|</font> 
+<font color="#CC0000">|</font> <font color="#4E9A06">|</font>     Merge pull request #23916 from hashicorp/cgriggs01-stable
+<font color="#CC0000">|</font> <font color="#4E9A06">|</font>     
+<font color="#CC0000">|</font> <font color="#4E9A06">|</font>     [Cherrypick] community links
+<font color="#CC0000">|</font> <font color="#4E9A06">|</font> 
+<font color="#CC0000">|</font> * <font color="#C4A000">commit 9ea88f22fc6269854151c571162c5bcf958bee2b</font>
+<font color="#CC0000">|/</font>  Author: Chris Griggs &lt;cgriggs@hashicorp.com&gt;
+<font color="#CC0000">|</font>   Date:   Tue Jan 21 17:08:06 2020 -0800
+<font color="#CC0000">|</font>   
+</pre>
+</cut>
 
-    First commit
+>2 родителя:
 
-commit a7257aa17bd34ac2e9b7cab636cfc8379c923865
-Author: Igor V <igor@*****.pro>
-Date:   Mon Sep 20 19:50:58 2021 +0300
 
-    Initial commit
+56cd7859e 9ea88f22f
 
-Перед последним коммитом был изменён user.email:
-git config --global user.email
+9ea88f22fc6269854151c571162c5bcf958bee2b
+56cd7859e05c36c06b56d013b55a252d0bb7e158
 
-1. Будут проигнорированы локальные директории '.terraform'
-2. файлы .tfstate содержащие в имени .tfstate либо в конце либо в середике названия.
-3. фалы переменных содержащие пароли, закрытые ключи и т.п. - *.tfvars
-4. файлы переопределения 
-5. конфигурационные файлы CLI
 
-fix
-Add fix
+<pre>~/Documents/terraform (main)$ git show b8d720^
+<font color="#C4A000">commit 56cd7859e05c36c06b56d013b55a252d0bb7e158</font>
+Merge: 58dcac4b7 ffbcf5581
+Author: Chris Griggs &lt;cgriggs@hashicorp.com&gt;
+Date:   Mon Jan 13 13:19:09 2020 -0800
 
-PyCharm
+    Merge pull request #23857 from hashicorp/cgriggs01-stable
+    
+    [cherry-pick]add checkpoint links
 
-Fix two
+</pre>
 
-'''
-git cat README.md
-git commit a -m "Добавление bb + gitlab"
-git commit -a -m "Добавление bb + gitlab"
-git tag v0.0
-git push origin main 
-git push -u bitbucket main
-git push -u gitlab main
-git tag 
-git push origin main --tags 
-git push -u bitbucket main --tags 
-git push -u gitlab main --tags 
-git tag -a v0.1 -m "annotation for tag"
-git tag 
-git show v0.1 
-git status 
-git push origin main --tags 
-git push -u bitbucket main --tags 
-git push -u gitlab main --tags 
-git log  
-git checkout 38e69dcc482d711fd3be3008edc32d81feaf3189
-git log 
-git switch -c fix
-git push -u origin fix
-git commit -a -m "Fix"
-git push -u origin
-git log 
-'''
+<cut>
+<pre>~/Documents/terraform (main)$ git show b8d720^2
+<font color="#C4A000">commit 9ea88f22fc6269854151c571162c5bcf958bee2b</font>
+Author: Chris Griggs &lt;cgriggs@hashicorp.com&gt;
+Date:   Tue Jan 21 17:08:06 2020 -0800
 
-=======
-git remote -v
-'''
-bitbucket	https://Ingvar78@bitbucket.org/Ingvar78/devops-netology.git (fetch)
-bitbucket	https://Ingvar78@bitbucket.org/Ingvar78/devops-netology.git (push)
-gitlab	https://gitlab.com/Ingvar78/devops-netology.git (fetch)
-gitlab	https://gitlab.com/Ingvar78/devops-netology.git (push)
-origin	https://github.com/Ingvar78/devops-netology.git (fetch)
-origin	https://github.com/Ingvar78/devops-netology.git (push)
-'''
+    add/update community provider listings
 
-##Домашнее задание к занятию «2.3. Ветвления в Git»
+</pre>
 
-история создания ветвления:
-~/branching/2.3.Ветвления\ в\ Git.txt
+</cut>
 
+
+
+4. Перечислите хеши и комментарии всех коммитов которые были сделаны между тегами v0.12.23 и v0.12.24.
+
+<cut>
+
+<pre>~/Documents/terraform (main)$ git log --oneline v0.12.23..v0.12.24
+<font color="#C4A000">33ff1c03b (</font><font color="#FCE94F"><b>tag: v0.12.24</b></font><font color="#C4A000">)</font> v0.12.24
+<font color="#C4A000">b14b74c49</font> [Website] vmc provider links
+<font color="#C4A000">3f235065b</font> Update CHANGELOG.md
+<font color="#C4A000">6ae64e247</font> registry: Fix panic when server is unreachable
+<font color="#C4A000">5c619ca1b</font> website: Remove links to the getting started guide&apos;s old location
+<font color="#C4A000">06275647e</font> Update CHANGELOG.md
+<font color="#C4A000">d5f9411f5</font> command: Fix bug when using terraform login on Windows
+<font color="#C4A000">4b6d06cc5</font> Update CHANGELOG.md
+<font color="#C4A000">dd01a3507</font> Update CHANGELOG.md
+<font color="#C4A000">225466bc3</font> Cleanup after v0.12.23 release
+</pre>
+
+</cut>
+
+5. Найдите коммит в котором была создана функция func providerSource, ее определение в коде выглядит так func providerSource(...) (вместо троеточего перечислены аргументы).
+6. Найдите все коммиты в которых была изменена функция globalPluginDirs.
+7. Кто автор функции synchronizedWriters?
