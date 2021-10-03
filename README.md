@@ -60,6 +60,7 @@ Date:   Thu Mar 5 20:56:10 2020 +0000
 56cd7859e 9ea88f22f
 
 9ea88f22fc6269854151c571162c5bcf958bee2b
+
 56cd7859e05c36c06b56d013b55a252d0bb7e158
 
 
@@ -109,5 +110,94 @@ Date:   Tue Jan 21 17:08:06 2020 -0800
 </cut>
 
 5. Найдите коммит в котором была создана функция func providerSource, ее определение в коде выглядит так func providerSource(...) (вместо троеточего перечислены аргументы).
+
+
+<pre>~/Documents/terraform (main)$  git grep -p &apos;func providerSource&apos;
+provider_source.go<font color="#06989A">=</font>import (
+provider_source.go<font color="#06989A">:</font><font color="#EF2929"><b>func providerSource</b></font>(configs []*cliconfig.ProviderInstallation, services *disco.Disco) (getproviders.Source, tfdiags.Diagnostics) {
+provider_source.go<font color="#06989A">=</font>func implicitProviderSource(services *disco.Disco) getproviders.Source {
+provider_source.go<font color="#06989A">:</font><font color="#EF2929"><b>func providerSource</b></font>ForCLIConfigLocation(loc cliconfig.ProviderInstallationLocation, services *disco.Disco) (getproviders.Source, tfdiags.Diagnostics) {
+</pre>
+
+<pre>~/Documents/terraform (main)$  git log -L :providerSource:provider_source.go
+
+Отредактирован:
+<font color="#C4A000">commit 5af1e6234ab6da412fb8637393c5a17a1b293663</font>
+Author: Martin Atkins &lt;mart@degeneration.co.uk&gt;
+Date:   Tue Apr 21 16:28:59 2020 -0700
+</pre>
+
+Отредактирован:
+<pre>
+<font color="#C4A000">commit 92d6a30bb4e8fbad0968a9915c6d90435a4a08f6</font>
+Author: Martin Atkins &lt;mart@degeneration.co.uk&gt;
+Date:   Wed Apr 15 11:48:24 2020 -0700
+</pre>
+
+Создан: 
+<pre><font color="#C4A000">commit 8c928e83589d90a031f811fae52a81be7153e82f</font>
+Author: Martin Atkins &lt;mart@degeneration.co.uk&gt;
+Date:   Thu Apr 2 18:04:39 2020 -0700
+</pre>
+
 6. Найдите все коммиты в которых была изменена функция globalPluginDirs.
+
+<pre>~/netology/terraform (main)$ git grep -p &apos;func globalPluginDirs&apos;
+plugins.go<font color="#06989A">=</font>import (
+plugins.go<font color="#06989A">:</font><font color="#EF2929"><b>func globalPluginDirs</b></font>() []string {
+</pre>
+
+git log -L '/func globalPluginDirs/',/^}/:plugins.go #-- Вернёт все коммиты где были изменения 
+
+Получить все хэши коммитов:
+
+<pre>/netology/terraform (main)$ git log -L &apos;/func globalPluginDirs/&apos;,/^}/:plugins.go | grep commit
+<font color="#EF2929"><b>commit</b></font> 78b12205587fe839f10d946ea3fdc06719decb05
+<font color="#EF2929"><b>commit</b></font> 52dbf94834cb970b510f2fba853a5b49ad9b1a46
+<font color="#EF2929"><b>commit</b></font> 41ab0aef7a0fe030e84018973a64135b11abcd70
+<font color="#EF2929"><b>commit</b></font> 66ebff90cdfaa6938f26f908c7ebad8d547fea17
+<font color="#EF2929"><b>commit</b></font> 8364383c359a6b738a436d1b7745ccdce178df47
+</pre>
+
+
 7. Кто автор функции synchronizedWriters?
+ищем все комиты где упоминается функция? найдено два коммита, 
+Первый коммит добавили функцию, второй комит удалили функицю.
+
+git log -S 'func synchronizedWriters'
+
+автор первого коммита:
+
+<font color="#C4A000">commit 5ac311e2a91e381e2f52234668b49ba670aa0fe5</font>
+Author: Martin Atkins &lt;mart@degeneration.co.uk&gt;
+Date:   Wed May 3 16:25:41 2017 -0700
+
+    main: synchronize writes to VT100-faker on Windows
+</pre>
+
+<pre>/netology/terraform (main)$ git show 5ac311e2a91e381e2f52234668b49ba670aa0fe5
+</pre>
+
+<cut>
+выведет историю изменения 
+</cut>
+
+------------------------------------
+
+автор последнего коммита удалил функцию
+
+<pre>git log -S &apos;func synchronizedWriters&apos;
+<font color="#C4A000">commit bdfea50cc85161dea41be0fe3381fd98731ff786</font>
+Author: James Bardin &lt;j.bardin@gmail.com&gt;
+Date:   Mon Nov 30 18:02:04 2020 -0500
+
+    remove unused
+
+
+git show bdfea50cc85161dea41be0fe3381fd98731ff786
+
+
+<cut>
+вывод историю изменеия
+</cut>
+
