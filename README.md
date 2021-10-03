@@ -92,6 +92,8 @@ Date:   Tue Jan 21 17:08:06 2020 -0800
 
 4. Перечислите хеши и комментарии всех коммитов которые были сделаны между тегами v0.12.23 и v0.12.24.
 
+короткий формат:
+
 <cut>
 
 <pre>~/Documents/terraform (main)$ git log --oneline v0.12.23..v0.12.24
@@ -109,9 +111,46 @@ Date:   Tue Jan 21 17:08:06 2020 -0800
 
 </cut>
 
+
+длинный формат:
+
+v1
+
+<pre>~/netology/terraform (main)$ git log --pretty=oneline  v0.12.23^..v0.12.24 
+<font color="#C4A000">33ff1c03bb960b332be3af2e333462dde88b279e (</font><font color="#FCE94F"><b>tag: v0.12.24</b></font><font color="#C4A000">)</font> v0.12.24
+<font color="#C4A000">b14b74c4939dcab573326f4e3ee2a62e23e12f89</font> [Website] vmc provider links
+<font color="#C4A000">3f235065b9347a758efadc92295b540ee0a5e26e</font> Update CHANGELOG.md
+<font color="#C4A000">6ae64e247b332925b872447e9ce869657281c2bf</font> registry: Fix panic when server is unreachable
+<font color="#C4A000">5c619ca1baf2e21a155fcdb4c264cc9e24a2a353</font> website: Remove links to the getting started guide&apos;s old location
+<font color="#C4A000">06275647e2b53d97d4f0a19a0fec11f6d69820b5</font> Update CHANGELOG.md
+<font color="#C4A000">d5f9411f5108260320064349b757f55c09bc4b80</font> command: Fix bug when using terraform login on Windows
+<font color="#C4A000">4b6d06cc5dcb78af637bbb19c198faff37a066ed</font> Update CHANGELOG.md
+<font color="#C4A000">dd01a35078f040ca984cdd349f18d0b67e486c35</font> Update CHANGELOG.md
+<font color="#C4A000">225466bc3e5f35baa5d07197bbc079345b77525e</font> Cleanup after v0.12.23 release
+<font color="#C4A000">85024d3100126de36331c6982bfaac02cdab9e76 (</font><font color="#FCE94F"><b>tag: v0.12.23</b></font><font color="#C4A000">)</font> v0.12.23
+</pre>
+
+v2
+
+<pre>~/netology/terraform (main)$ git log --pretty=format:&quot;%H %s&quot; v0.12.23...v0.12.24 
+33ff1c03bb960b332be3af2e333462dde88b279e v0.12.24
+b14b74c4939dcab573326f4e3ee2a62e23e12f89 [Website] vmc provider links
+3f235065b9347a758efadc92295b540ee0a5e26e Update CHANGELOG.md
+6ae64e247b332925b872447e9ce869657281c2bf registry: Fix panic when server is unreachable
+5c619ca1baf2e21a155fcdb4c264cc9e24a2a353 website: Remove links to the getting started guide&apos;s old location
+06275647e2b53d97d4f0a19a0fec11f6d69820b5 Update CHANGELOG.md
+d5f9411f5108260320064349b757f55c09bc4b80 command: Fix bug when using terraform login on Windows
+4b6d06cc5dcb78af637bbb19c198faff37a066ed Update CHANGELOG.md
+dd01a35078f040ca984cdd349f18d0b67e486c35 Update CHANGELOG.md
+225466bc3e5f35baa5d07197bbc079345b77525e Cleanup after v0.12.23 release
+</pre>
+
+
 если нас интересует вывод всех коммитов, ключая комит с тэгом то добавляем '^' к тэгу:
 
 git log --oneline v0.12.23^..v0.12.24
+
+
 
 5. Найдите коммит в котором была создана функция func providerSource, ее определение в коде выглядит так func providerSource(...) (вместо троеточего перечислены аргументы).
 
