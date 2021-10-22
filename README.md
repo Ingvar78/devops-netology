@@ -4,9 +4,49 @@
 
 1. Какого типа команда cd? Попробуйте объяснить, почему она именно такого типа; опишите ход своих мыслей, если считаете что она могла бы быть другого типа.
 
+Интерпретатор bash имеет множество встроенных команд, часть из которых имеет аналогичные исполняемые файлы в операционной системе.
+cd - это встроенная команда bash, bash интерпретирует поступающие на stdin комманды, и в зависимости от того 
+
 2. Какая альтернатива без pipe команде grep <some_string> <some_file> | wc -l? man grep поможет в ответе на этот вопрос. Ознакомьтесь с документом о других подобных некорректных вариантах использования pipe.
 
 3. Какой процесс с PID 1 является родителем для всех процессов в вашей виртуальной машине Ubuntu 20.04?
+
+Процесс c PID 1 - systemd - это системный демон, который (подобно процессу init) является родителем (прямым или косвенным) всех других процессов.
+
+```
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+  1 root      20   0  167352  11220   8360 S   0.0   0.4   0:00.73 systemd
+```
+
+```
+vagrant@u8:~$ pstree -p 
+systemd(1)─┬─VBoxService(813)─┬─{VBoxService}(815)
+           │                  └─...
+           ├─accounts-daemon(625)─┬─{accounts-daemon}(676)
+           │                      └─...
+           ├─agetty(698)
+           ├─atd(689)
+           ├─cron(687)
+           ├─dbus-daemon(626)
+           ├─irqbalance(631)───{irqbalance}(635)
+           ├─multipathd(574)─┬─{multipathd}(575)
+           │                 └─...
+           ├─networkd-dispat(633)
+           ├─polkitd(843)─┬─{polkitd}(854)
+           │              └─{polkitd}(856)
+           ├─rpcbind(600)
+           ├─rsyslogd(634)─┬─{rsyslogd}(706)
+           │               ├─...
+           │               └─{rsyslogd}(708)
+           ├─sshd(735)───sshd(1210)───sshd(1266)───bash(1267)───pstree(1536)
+           ├─systemd(1225)───(sd-pam)(1227)
+           ├─systemd-journal(391)
+           ├─systemd-logind(644)
+           ├─systemd-network(446)
+           ├─systemd-resolve(602)
+           └─systemd-udevd(422)
+
+```
 
 4. Как будет выглядеть команда, которая перенаправит вывод stderr ls на другую сессию терминала?
 
@@ -23,6 +63,29 @@
 10. Используя man, опишите что доступно по адресам /proc/<PID>/cmdline, /proc/<PID>/exe.
 
 11. Узнайте, какую наиболее старшую версию набора инструкций SSE поддерживает ваш процессор с помощью /proc/cpuinfo.
+SSE4.2
+
+```
+vagrant@u8:~$ ./catproc.sh 
+sse
+sse2
+ssse3
+sse4_1
+sse4_2
+vagrant@u8:~$ cat ./catproc.sh 
+#!/bin/bash
+
+OUTPUT=$(cat "/proc/cpuinfo" | grep flags| uniq )
+
+#echo -e $OUTPUT
+
+IFS=' '
+read -ra flags <<< "$OUTPUT"
+
+for i in "${flags[@]}"; do
+    echo -e $i |grep sse
+done
+```
 
 12. При открытии нового окна терминала и vagrant ssh создается новая сессия и выделяется pty. Это можно подтвердить командой tty, которая упоминалась в лекции 3.2. Однако:
 
