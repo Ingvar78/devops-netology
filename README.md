@@ -105,6 +105,30 @@ cat < /proc/cpuinfo >test_file
 ```
 
 6. Получится ли находясь в графическом режиме, вывести данные из PTY в какой-либо из эмуляторов TTY? Сможете ли вы наблюдать выводимые данные?
+    При выполнении данного задания использовался xTerm из графического режима и консоль linux.
+
+```
+iva@c8:~ $ who am i
+iva      pts/3        2021-10-25 23:10 (:0)
+iva@c8:~ $ echo 'Test pts3'>/dev/tty3
+```
+
+CTRL+ALT+F3
+
+```
+iva@c8:~ $ who am i
+iva      tty/3        2021-10-25 23:12 (:0)
+iva@c8:~ $ Test pts3
+iva@c8:~ $ echo 'Test tty3' >/dev/pts/3
+```
+переключаемся обратно в графический режим на xTerm
+
+```
+iva@c8:~ $ who am i
+iva      pts/3        2021-10-25 23:10 (:0)
+iva@c8:~ $ echo 'Test pts3'>/dev/tty3
+iva@c8:~ $ Test tty3
+```
 
 
 7. Выполните команду bash 5>&1. К чему она приведет? Что будет, если вы выполните echo netology > /proc/$$/fd/5? Почему так происходит?
@@ -194,6 +218,34 @@ vagrant@u8:~$ ssh -t localhost 'tty'
 13. Бывает, что есть необходимость переместить запущенный процесс из одной сессии в другую. Попробуйте сделать это, воспользовавшись reptyr. 
     Например, так можно перенести в screen процесс, который вы запустили по ошибке в обычной SSH-сессии.
 
+```
+vagrant@u8:~$ reptyr 1319
+-bash: reptyr: command not found
+```
+после установки приложения не удалось восстановить работу приложения
+
+```
+  1831 pts/0    T      0:00 top
+   1832 pts/0    R+     0:00 ps ax
+vagrant@u8:~$ sudo reptyr 1831
+[-] Unable to open the tty in the child.
+Unable to attach to pid 1831: Permission denied
+
+[1]+  Stopped                 top
+vagrant@u8:~$ reptyr 1831
+Unable to attach to pid 1831: Operation not permitted
+The kernel denied permission while attaching. If your uid matches
+the target's, check the value of /proc/sys/kernel/yama/ptrace_scope.
+For more information, see /etc/sysctl.d/10-ptrace.conf
+
+[1]+  Stopped                 top
+
+```
+
+при выполнении аналогичной операции на физической (хостовой) ОС удалось перенести процесс запущенный в другой сессии.
+
+
+
 14.  sudo echo string > /root/new_file не даст выполнить перенаправление под обычным пользователем, так как перенаправлением занимается 
     процесс shell'а, который запущен без sudo под вашим пользователем. 
     Для решения данной проблемы можно использовать конструкцию echo string | sudo tee /root/new_file.
@@ -202,4 +254,3 @@ vagrant@u8:~$ ssh -t localhost 'tty'
     Команда tee читает из стандартного потока ввода и записывает в стандартный поток вывода и может записывать в подготовленный файл или переменную.
     Команда отработает корректно ввиду того, что команда tee будет запущена с использованием sudo и тем самым повысятся привиллегии этой 
     команды до root-пользователя,  что позволит успешно записать в файл, который доступен на запиcь только для root-пользователя.
-    
