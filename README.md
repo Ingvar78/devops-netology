@@ -1,256 +1,193 @@
 # devops-netology 
 
-### Домашнее задание к занятию "3.2. Работа в терминале, лекция 2"
+### Домашнее задание к занятию "3.3. Операционные системы, лекция 1"
 
-1. Какого типа команда cd? Попробуйте объяснить, почему она именно такого типа; опишите ход своих мыслей, если считаете что она могла бы быть другого типа.
+1. Какой системный вызов делает команда cd? В прошлом ДЗ мы выяснили, что cd не является самостоятельной программой, это shell builtin, поэтому запустить strace непосредственно на cd не получится. 
+    Тем не менее, вы можете запустить strace на /bin/bash -c 'cd /tmp'. В этом случае вы увидите полный список системных вызовов, которые делает сам bash при старте. 
+    Вам нужно найти тот единственный, который относится именно к cd. Обратите внимание, что strace выдаёт результат своей работы в поток stderr, а не в stdout.
 
-Интерпретатор bash имеет множество встроенных команд, часть из которых имеет аналогичные исполняемые файлы в операционной системе.
-cd - это встроенная команда bash, bash интерпретирует поступающие на stdin комманды, и в зависимости от того является ли это внутренней командой или исполняемым фалом происходит либо внутреннее исполнение либо перенаправление, вызов внешней программы с передачей параметров.
-
-2. Какая альтернатива без pipe команде grep <some_string> <some_file> | wc -l? man grep поможет в ответе на этот вопрос. Ознакомьтесь с документом о других подобных некорректных вариантах использования pipe.
-
-'|' - позволяет выстраивать конвеер из комманд, результат работы первой комманды перенаправляется для обработки второй комманды.
-в случае с grep имеется ключ -c - который заменит нам комманду wc -l
+2. Попробуйте использовать команду file на объекты разных типов на файловой системе. Например:
 
 ```
-iva@c8:~/Vagrant $ grep cpu /proc/cpuinfo | wc -l
-48
-iva@c8:~/Vagrant $ grep cpu /proc/cpuinfo -c
-48
-
-vagrant@u8:~$ grep sse /proc/cpuinfo -c
-4
-vagrant@u8:~$ grep cpu /proc/cpuinfo -c
-24
-```
-
-
-3. Какой процесс с PID 1 является родителем для всех процессов в вашей виртуальной машине Ubuntu 20.04?
-
-Процесс c PID 1 - systemd - это системный демон, который (подобно процессу init) является родителем (прямым или косвенным) всех других процессов.
-
-```
-  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
-  1 root      20   0  167352  11220   8360 S   0.0   0.4   0:00.73 systemd
-```
-
-```
-vagrant@u8:~$ pstree -p 
-systemd(1)─┬─VBoxService(813)─┬─{VBoxService}(815)
-           │                  └─...
-           ├─accounts-daemon(625)─┬─{accounts-daemon}(676)
-           │                      └─...
-           ├─agetty(698)
-           ├─atd(689)
-           ├─cron(687)
-           ├─dbus-daemon(626)
-           ├─irqbalance(631)───{irqbalance}(635)
-           ├─multipathd(574)─┬─{multipathd}(575)
-           │                 └─...
-           ├─networkd-dispat(633)
-           ├─polkitd(843)─┬─{polkitd}(854)
-           │              └─{polkitd}(856)
-           ├─rpcbind(600)
-           ├─rsyslogd(634)─┬─{rsyslogd}(706)
-           │               ├─...
-           │               └─{rsyslogd}(708)
-           ├─sshd(735)───sshd(1210)───sshd(1266)───bash(1267)───pstree(1536)
-           ├─systemd(1225)───(sd-pam)(1227)
-           ├─systemd-journal(391)
-           ├─systemd-logind(644)
-           ├─systemd-network(446)
-           ├─systemd-resolve(602)
-           └─systemd-udevd(422)
+Last login: Mon Oct 25 20:03:26 2021 from 10.0.2.2
+vagrant@u8:~$ file /dev/tty
+/dev/tty: character special (5/0)
+vagrant@u8:~$ file /dev/sda
+/dev/sda: block special (8/0)
+vagrant@u8:~$ file /bin/bash
+/bin/bash: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=a6cb40078351e05121d46daa768e271846d5cc54, for GNU/Linux 3.2.0, stripped
 
 ```
 
-```
-$ ps -p 1
-    PID TTY          TIME CMD
-      1 ?        00:00:16 systemd
-```
-
-4. Как будет выглядеть команда, которая перенаправит вывод stderr ls на другую сессию терминала?
+Используя strace выясните, где находится база данных file на основании которой она делает свои догадки.
 
 ```
-$ls /etc/no_file  2>/dev/pts/1 >/dev/pts/0
+vagrant@u8:~$ rm strace2.txt 
+vagrant@u8:~$ strace -o strace2.txt   file /bin/bash
 ```
 
-перенаправит вывод на терминал 0
+Ищем в стэктрэйсе какие файлы открывались:
 
-Пример перенаправления ошибок из stderr в другой терминал:
 
 ```
-$echo "Test" >/dev/stderr 
-Test
-$echo "Test" >/dev/stderr >/dev/pts/0 - перенаправит вывод ошибок из stderr в терминал 0
-```
-Смотрим номер текущего терминала и открываем новый терминал, выполняем перенаправление:
-
-```
-vagrant@u8:~$ who am i
-vagrant  pts/1        2021-10-24 21:28 (10.0.2.2)
-vagrant@u8:~$ ls /not_exist 2> /dev/pts/0
-
-vagrant@u8:~$ who am i
-vagrant  pts/0        2021-10-24 21:28 (10.0.2.2)
-vagrant@u8:~$ ls: cannot access '/not_exist': No such file or directory
-
-```
-
-5. Получится ли одновременно передать команде файл на stdin и вывести ее stdout в другой файл? Приведите работающий пример.
-
-```
-cat < /proc/cpuinfo >test_file
+vagrant@u8:~$ grep openat strace2.txt 
+openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libmagic.so.1", O_RDONLY|O_CLOEXEC) = 3
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/liblzma.so.5", O_RDONLY|O_CLOEXEC) = 3
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libbz2.so.1.0", O_RDONLY|O_CLOEXEC) = 3
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libz.so.1", O_RDONLY|O_CLOEXEC) = 3
+openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libpthread.so.0", O_RDONLY|O_CLOEXEC) = 3
+openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+openat(AT_FDCWD, "/etc/magic.mgc", O_RDONLY) = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, "/etc/magic", O_RDONLY) = 3
+openat(AT_FDCWD, "/usr/share/misc/magic.mgc", O_RDONLY) = 3
+openat(AT_FDCWD, "/usr/lib/x86_64-linux-gnu/gconv/gconv-modules.cache", O_RDONLY) = 3
+openat(AT_FDCWD, "/bin/bash", O_RDONLY|O_NONBLOCK) = 3
 ```
 
-6. Получится ли находясь в графическом режиме, вывести данные из PTY в какой-либо из эмуляторов TTY? Сможете ли вы наблюдать выводимые данные?
-    При выполнении данного задания использовался xTerm из графического режима и консоль linux.
+исключаем библиотеки и кэш из поиска интересующих нас файла и сам bash
+
+остаются три файла, один из которых отсутсвует.
 
 ```
-iva@c8:~ $ who am i
-iva      pts/3        2021-10-25 23:10 (:0)
-iva@c8:~ $ echo 'Test pts3'>/dev/tty3
+openat(AT_FDCWD, "/etc/magic.mgc", O_RDONLY) = -1 ENOENT (No such file or directory) - не существует
+openat(AT_FDCWD, "/etc/magic", O_RDONLY) = 3 - конфигурационный файл для добавления магических чисел
+openat(AT_FDCWD, "/usr/share/misc/magic.mgc", O_RDONLY) = 3 - основной файл содержащий магические числа для определения типа файла.
 ```
 
-CTRL+ALT+F3
+интересующий нас файл:
 
 ```
-iva@c8:~ $ who am i
-iva      tty/3        2021-10-25 23:12 (:0)
-iva@c8:~ $ Test pts3
-iva@c8:~ $ echo 'Test tty3' >/dev/pts/3
-```
-переключаемся обратно в графический режим на xTerm
-
-```
-iva@c8:~ $ who am i
-iva      pts/3        2021-10-25 23:10 (:0)
-iva@c8:~ $ echo 'Test pts3'>/dev/tty3
-iva@c8:~ $ Test tty3
+vagrant@u8:~$ ls -la /usr/share/misc/magic.mgc
+lrwxrwxrwx 1 root root 24 Jul 28 17:46 /usr/share/misc/magic.mgc -> ../../lib/file/magic.mgc
 ```
 
+3. Предположим, приложение пишет лог в текстовый файл. Этот файл оказался удален (deleted в lsof), однако возможности сигналом сказать приложению переоткрыть файлы или просто перезапустить приложение – нет. 
+    Так как приложение продолжает писать в удаленный файл, место на диске постепенно заканчивается. Основываясь на знаниях о перенаправлении потоков предложите способ обнуления открытого удаленного файла (чтобы освободить место на файловой системе).
 
-7. Выполните команду bash 5>&1. К чему она приведет? Что будет, если вы выполните echo netology > /proc/$$/fd/5? Почему так происходит?
-
-```
-vagrant@u8:~$ bash 5>&1  - открывает десткриптор 5 с правами на чтение и запись, выводит в стандартный вывод. 
-
-vagrant@u8:~$ echo netology > /proc/$$/fd/5  - перенаправляет вывод команды echo в дескриптор 5
-netology - выводится в текушем терминале
-```
-При выполнении команды echo netology > /proc/$$/fd/5 происходит вывод результата работы команды на терминал 
-т.к. в команде выполняется перенаправление стандартного вывода в тот же самый файловый дескриптор 
-(в нашем случае в файловый дескриптор с номером 5) который в свою очередь ранее был перенаправлен 
-на стандартный вывод (в файловый дескриптор 1)
-
-
-8. Получится ли в качестве входного потока для pipe использовать только stderr команды, не потеряв при этом отображение stdout на pty? Напоминаем: по умолчанию через pipe передается только stdout команды слева от | на stdin команды справа. Это можно сделать, поменяв стандартные потоки местами через промежуточный новый дескриптор, который вы научились создавать в предыдущем вопросе.
-
-9. Что выведет команда cat /proc/$$/environ? Как еще можно получить аналогичный по содержанию вывод?
-
-cat /proc/$$/environ | strings
-
-printenv или env - команды позволяют вывести все переменные окружения и оболочки
-
-/proc/PID/environ – переменные окружения для данного процесса;
-
-cat /proc/$$/environ | strings
-
-
-10. Используя man, опишите что доступно по адресам /proc/<PID>/cmdline, /proc/<PID>/exe.
-
-/proc/<PID>/cmdline - содержит полную командную строку для процесса, если только процесс не является зомби, иначе возвращает пустую строку. 
-
-vagrant@u8:~$ cat /proc/$$/cmdline
--bash
-
-/proc/<PID>/exe - В Linux 2.2 и более поздних версиях этот файл представляет собой символическую ссылку, содержащую фактический путь к исполняемой команде
-
-vagrant@u8:~$ file /proc/$$/exe 
-/proc/1621/exe: symbolic link to /usr/bin/bash
-
-root@u8:/home/vagrant# file /proc/1/exe
-/proc/1/exe: symbolic link to /usr/lib/systemd/systemd
-
-
-11. Узнайте, какую наиболее старшую версию набора инструкций SSE поддерживает ваш процессор с помощью /proc/cpuinfo.
-Ответ: SSE4.2
+3.1 Создаём поток записи в файл:
 
 ```
-vagrant@u8:~$ ./catproc.sh 
-sse
-sse2
-ssse3
-sse4_1
-sse4_2
-vagrant@u8:~$ cat ./catproc.sh 
-#!/bin/bash
-
-OUTPUT=$(cat "/proc/cpuinfo" | grep flags| uniq )
-
-#echo -e $OUTPUT
-
-IFS=' '
-read -ra flags <<< "$OUTPUT"
-
-for i in "${flags[@]}"; do
-    echo -e $i |grep sse
-done
+vagrant@u8:~$ tty
+/dev/pts/1
+vagrant@u8:~$ htop | tee -a logfile
 ```
 
-12. При открытии нового окна терминала и vagrant ssh создается новая сессия и выделяется pty. Это можно подтвердить командой tty, которая упоминалась в лекции 3.2. Однако:
+3.2 Проверяем в другой сессии
 
 ```
-vagrant@netology1:~$ ssh localhost 'tty'
-not a tty
+vagrant@u8:~$ tty
+/dev/pts/0
+vagrant@u8:~$ ls -la | grep logfile 
+-rw-rw-r-- 1 vagrant vagrant  73774 Oct 25 22:34 logfile
+vagrant@u8:~$ ls -la | grep logfile 
+-rw-rw-r-- 1 vagrant vagrant  73774 Oct 25 22:34 logfile
+vagrant@u8:~$ ls -la | grep logfile 
+-rw-rw-r-- 1 vagrant vagrant  73923 Oct 25 22:34 logfile
+vagrant@u8:~$ ls -la | grep logfile 
+-rw-rw-r-- 1 vagrant vagrant  73923 Oct 25 22:34 logfile
+vagrant@u8:~$ ls -la | grep logfile 
+-rw-rw-r-- 1 vagrant vagrant  74020 Oct 25 22:34 logfile
 ```
 
-Почитайте, почему так происходит, и как изменить поведение.
-
-
-SSH не устанавливает TTY по умолчанию, Чтобы обойти это необходимо передать параметр -t
+3.3 ищем наш процесс который пишет в логфайл и информацию о нём
 
 ```
-vagrant@u8:~$ ssh -t localhost 'tty'
+vagrant@u8:~$ ps aux | grep logfile
+vagrant     2221  0.0  0.0   8088   592 pts/1    S+   22:39   0:00 tee -a logfile
+
+vagrant@u8:~$ ps aux | grep tee
+vagrant     2221  0.0  0.0   8088   592 pts/1    S+   22:39   0:00 tee -a logfile
 ```
 
-13. Бывает, что есть необходимость переместить запущенный процесс из одной сессии в другую. Попробуйте сделать это, воспользовавшись reptyr. 
-    Например, так можно перенести в screen процесс, который вы запустили по ошибке в обычной SSH-сессии.
+vagrant@u8:~$ lsof -p 2221 | grep logfile
+tee     2221 vagrant    3w   REG  253,0   119535  131092 /home/vagrant/logfile
+
+3.4 Удаляем файл.
 
 ```
-vagrant@u8:~$ reptyr 1319
--bash: reptyr: command not found
-```
-после установки приложения не удалось восстановить работу приложения
-
-```
-  1831 pts/0    T      0:00 top
-   1832 pts/0    R+     0:00 ps ax
-vagrant@u8:~$ sudo reptyr 1831
-[-] Unable to open the tty in the child.
-Unable to attach to pid 1831: Permission denied
-
-[1]+  Stopped                 top
-vagrant@u8:~$ reptyr 1831
-Unable to attach to pid 1831: Operation not permitted
-The kernel denied permission while attaching. If your uid matches
-the target's, check the value of /proc/sys/kernel/yama/ptrace_scope.
-For more information, see /etc/sysctl.d/10-ptrace.conf
-
-[1]+  Stopped                 top
+vagrant@u8:~$ rm logfile
+vagrant@u8:~$ file logfile
+logfile: cannot open `logfile' (No such file or directory)
+vagrant@u8:~$ cat logfile
+cat: logfile: No such file or directory
 
 ```
 
-при выполнении аналогичной операции на физической (хостовой) ОС удалось перенести процесс запущенный в другой сессии.
+```
+agrant@u8:/home$ lsof -p 2221 | grep logfile
+tee     2221 vagrant    3w   REG  253,0   194997  131092 /home/vagrant/logfile (deleted)
+```
+
+```
+vagrant@u8:~$ cat /proc/2221/fd/3
+vagrant@u8:~$  !!#!!
+  1  [                          0.0%]   Tasks: 29, 22 thr; 1 running
+  2  [                          0.0%]   Load average: 0.00 0.00 0.00 
+  3  [                          0.0%]   Uptime: 03:01:12
+  4  [|                         0.7%]
+  Mem[||||||||            110M/2.92G]
+  Swp[                       0K/980M]
+
+    PID USER      PRI  NI  VIRT   RES   SHR S CPU% MEM%   TIME+  Command
+   2220 vagrant    20   0 10492  3892  3296 R  0.7  0.1  0:01.63 htop
+    574 root       RT   0  273M 17992  8200 S  0.0  0.6  0:00.68 /sbin/multipath
+   2106 vagrant    20   0 13960  6416  4844 S  0.0  0.2  0:00.15 sshd: vagrant@p
+    840 root       20   0  288M  2824  2456 S  0.0  0.1  0:01.03 /usr/sbin/VBoxS
+    632 root       20   0 81828  3724  3424 S  0.0  0.1  0:00.21 /usr/sbin/irqba
+    424 root       20   0 21568  5620  3904 S  0.0  0.2  0:00.62 /lib/systemd/sy
+    394 root       19  -1 59668 24160 23144 S  0.0  0.8  0:00.15 /lib/systemd/sy
+   2310 root       20   0 13796  9076  7632 S  0.0  0.3  0:00.01 sshd: vagrant [
+    845 root       20   0  288M  2824  2456 S  0.0  0.1  0:00.78 /usr/sbin/VBoxS
+   2221 vagrant    20   0  8088   592   528 S  0.0  0.0  0:00.09 tee -a logfile
+    624 messagebu  20   0  7604  4652  3992 S  0.0  0.2  0:00.40 /usr/bin/dbus-d
+    579 root       RT   0  273M 17992  8200 S  0.0  0.6  0:00.41 /sbin/multipath
+    623 root       20   0  232M  7324  6496 S  0.0  0.2  0:00.17 /usr/lib/accoun
+    659 root       20   0  232M  7324  6496 S  0.0  0.2  0:00.14 /usr/lib/accoun
+F1Help  F2Setup F3SearchF4FilterF5Tree  F6SortByF7Nice -F8Nice +F9Kill  F10Quit
+
+```
+
+Очищаем файл.
+
+```
+vagrant@u8:~$ cat /dev/null> /proc/2221/fd/3
+```
+
+Очистка файла позволяет освободить место, но т.к. процесс всё ещё работает, файл продолжит наполняться забивая место, что бы этого избежать можно вызвать принудительное завершение процесса, дескриптор удалитсся.
 
 
+4. Занимают ли зомби-процессы какие-то ресурсы в ОС (CPU, RAM, IO)?
 
-14.  sudo echo string > /root/new_file не даст выполнить перенаправление под обычным пользователем, так как перенаправлением занимается 
-    процесс shell'а, который запущен без sudo под вашим пользователем. 
-    Для решения данной проблемы можно использовать конструкцию echo string | sudo tee /root/new_file.
-    Узнайте что делает команда tee и почему в отличие от sudo echo команда с sudo tee будет работать.
+    Зомби-процессы не занимают памяти, но блокируют записи в таблице процессов, размер которой ограничен для каждого пользователя и системы в целом.
+    При достижении лимита записей все процессы пользователя, от имени которого выполняется создающий зомби родительский процесс, не будут способны создавать новые дочерние процессы.
+    Всякий процесс при завершении и до считывания статуса завершения предком пребывает в состоянии зомби, это совершенно нормально и короткоживущие зомби-процессы не представляют проблемы в системе. 
+    При этом ряд ошибок программирования может приводить к возникновению и накоплению в системе необрабатываемых процессов-зомби (т. е. уже завершившихся процессов, родитель которых не считывает их статус).
 
-    Команда tee читает из стандартного потока ввода и записывает в стандартный поток вывода и может записывать в подготовленный файл или переменную.
-    Команда отработает корректно ввиду того, что команда tee будет запущена с использованием sudo и тем самым повысятся привиллегии этой 
-    команды до root-пользователя,  что позволит успешно записать в файл, который доступен на запиcь только для root-пользователя.
+5. В iovisor BCC есть утилита opensnoop:
+
+```
+root@vagrant:~# dpkg -L bpfcc-tools | grep sbin/opensnoop
+/usr/sbin/opensnoop-bpfcc
+```
+
+На какие файлы вы увидели вызовы группы open за первую секунду работы утилиты? Воспользуйтесь пакетом bpfcc-tools для Ubuntu 20.04. Дополнительные сведения по установке.
+
+6. Какой системный вызов использует uname -a? Приведите цитату из man по этому системному вызову, где описывается альтернативное местоположение в /proc, где можно узнать версию ядра и релиз ОС.
+
+7. Чем отличается последовательность команд через ; и через && в bash? Например:
+
+```
+root@netology1:~# test -d /tmp/some_dir; echo Hi
+Hi
+root@netology1:~# test -d /tmp/some_dir && echo Hi
+root@netology1:~#
+```
+
+Есть ли смысл использовать в bash &&, если применить set -e?
+
+8. Из каких опций состоит режим bash set -euxo pipefail и почему его хорошо было бы использовать в сценариях?
+
+9. Используя -o stat для ps, определите, какой наиболее часто встречающийся статус у процессов в системе. В man ps ознакомьтесь (/PROCESS STATE CODES) что значат дополнительные к основной заглавной буквы статуса процессов. Его можно не учитывать при расчете (считать S, Ss или Ssl равнозначными).
+
