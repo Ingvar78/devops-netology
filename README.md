@@ -145,7 +145,23 @@ netology - выводится в текушем терминале
 на стандартный вывод (в файловый дескриптор 1)
 
 
-8. Получится ли в качестве входного потока для pipe использовать только stderr команды, не потеряв при этом отображение stdout на pty? Напоминаем: по умолчанию через pipe передается только stdout команды слева от | на stdin команды справа. Это можно сделать, поменяв стандартные потоки местами через промежуточный новый дескриптор, который вы научились создавать в предыдущем вопросе.
+8. Получится ли в качестве входного потока для pipe использовать только stderr команды, не потеряв при этом отображение stdout на pty? 
+    Напоминаем: по умолчанию через pipe передается только stdout команды слева от | на stdin команды справа. 
+    Это можно сделать, поменяв стандартные потоки местами через промежуточный новый дескриптор, который вы научились создавать в предыдущем вопросе.
+
+```
+vagrant@u8:~$ ls /no_files 5>&1 1>&2 2>&5 | cat
+ls: cannot access '/no_files': No such file or directory
+vagrant@u8:~$ cat file1.txt 5>&1 1>&2 2>&5 |grep '' 
+test file
+vagrant@u8:~$ cat no_such_file.txt 5>&1 1>&2 2>&5 |grep '' 
+cat: no_such_file.txt: No such file or directory
+```
+
+    Получится, если создать новый файловый дескриптер и передать на него stdout, затем stdout передать на stderr, а stderr передать на новый файловый дескриптер 5.
+    0 — stdin , стандартный поток ввода.
+    1 — stdout , стандартный поток вывода.
+    2 — stderr , стандартный поток ошибок.
 
 9. Что выведет команда cat /proc/$$/environ? Как еще можно получить аналогичный по содержанию вывод?
 
@@ -219,31 +235,31 @@ vagrant@u8:~$ ssh -t localhost 'tty'
     Например, так можно перенести в screen процесс, который вы запустили по ошибке в обычной SSH-сессии.
 
 ```
-vagrant@u8:~$ reptyr 1319
--bash: reptyr: command not found
+vagrant@u8:~$ who am i
+vagrant  pts/0        2021-10-26 21:51 (10.0.2.2)
+vagrant@uv:~$ top - запустили процесс
 ```
-после установки приложения не удалось восстановить работу приложения
+
+CTRL+Z - приостанавливаем работу
 
 ```
-  1831 pts/0    T      0:00 top
-   1832 pts/0    R+     0:00 ps ax
-vagrant@u8:~$ sudo reptyr 1831
-[-] Unable to open the tty in the child.
-Unable to attach to pid 1831: Permission denied
-
 [1]+  Stopped                 top
-vagrant@u8:~$ reptyr 1831
-Unable to attach to pid 1831: Operation not permitted
-The kernel denied permission while attaching. If your uid matches
-the target's, check the value of /proc/sys/kernel/yama/ptrace_scope.
-For more information, see /etc/sysctl.d/10-ptrace.conf
-
-[1]+  Stopped                 top
+vagrant@u8:~$ ps ax| grep top
+   2011 pts/0    T      0:00 top
+   2013 pts/0    S+     0:00 grep --color=auto top
 
 ```
 
-при выполнении аналогичной операции на физической (хостовой) ОС удалось перенести процесс запущенный в другой сессии.
+открываем новый терминал 
 
+```
+vagrant@u8:~$ who am i
+vagrant  pts/1        2021-10-26 21:51 (10.0.2.2)
+vagrant@u8:~$ screen
+vagrant@u8:~$ sudo reptyr -T 2011
+vagrant@u8:~$ vagrant@u8:~$ fg top - выводим на экран.
+
+```
 
 
 14.  sudo echo string > /root/new_file не даст выполнить перенаправление под обычным пользователем, так как перенаправлением занимается 
