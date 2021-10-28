@@ -296,6 +296,7 @@ set -euxo
     В man ps ознакомьтесь (/PROCESS STATE CODES) что значат дополнительные к основной заглавной буквы статуса процессов. 
     Его можно не учитывать при расчете (считать S, Ss или Ssl равнозначными).
 
+```
     D    uninterruptible sleep (usually IO)
     I    Idle kernel thread
     R    running or runnable (on run queue)
@@ -305,6 +306,8 @@ set -euxo
     W    paging (not valid since the 2.6.xx kernel)
     X    dead (should never be seen)
     Z    defunct ("zombie") process, terminated but not reaped by its parent
+
+```
 
 ```
 vagrant@u8:~$ ps -o stat
@@ -330,4 +333,4 @@ R+
            +    is in the foreground process group
 ```
 
-увидеть дополнительные параметры процессов можно выполнив $ps aux
+    увидеть дополнительные параметры процессов можно выполнив $ps aux
