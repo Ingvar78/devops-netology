@@ -6,6 +6,17 @@
     Тем не менее, вы можете запустить strace на /bin/bash -c 'cd /tmp'. В этом случае вы увидите полный список системных вызовов, которые делает сам bash при старте. 
     Вам нужно найти тот единственный, который относится именно к cd. Обратите внимание, что strace выдаёт результат своей работы в поток stderr, а не в stdout.
 
+```
+vagrant@u8:~$ strace -e trace=stat,chdir /bin/bash -c "cd /tmp"
+stat("/home/vagrant", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+stat(".", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+stat("/home", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+stat("/home/vagrant", {st_mode=S_IFDIR|0755, st_size=4096, ...}) = 0
+stat("/tmp", {st_mode=S_IFDIR|S_ISVTX|0777, st_size=4096, ...}) = 0
+chdir("/tmp")                           = 0 - смена директории.
++++ exited with 0 +++
+```
+
 2. Попробуйте использовать команду file на объекты разных типов на файловой системе. Например:
 
 ```
@@ -174,20 +185,152 @@ root@vagrant:~# dpkg -L bpfcc-tools | grep sbin/opensnoop
 
 На какие файлы вы увидели вызовы группы open за первую секунду работы утилиты? Воспользуйтесь пакетом bpfcc-tools для Ubuntu 20.04. Дополнительные сведения по установке.
 
+```
+vagrant@u8:~$ sudo /usr/sbin/opensnoop-bpfcc
+
+PID    COMM               FD ERR PATH
+628    irqbalance          6   0 /proc/interrupts
+628    irqbalance          6   0 /proc/stat
+628    irqbalance          6   0 /proc/irq/20/smp_affinity
+628    irqbalance          6   0 /proc/irq/0/smp_affinity
+628    irqbalance          6   0 /proc/irq/1/smp_affinity
+628    irqbalance          6   0 /proc/irq/8/smp_affinity
+628    irqbalance          6   0 /proc/irq/12/smp_affinity
+628    irqbalance          6   0 /proc/irq/14/smp_affinity
+628    irqbalance          6   0 /proc/irq/15/smp_affinity
+809    vminfo              4   0 /var/run/utmp
+623    dbus-daemon        -1   2 /usr/local/share/dbus-1/system-services
+623    dbus-daemon        18   0 /usr/share/dbus-1/system-services
+623    dbus-daemon        -1   2 /lib/dbus-1/system-services
+623    dbus-daemon        18   0 /var/lib/snapd/dbus-1/system-services/
+809    vminfo              4   0 /var/run/utmp
+623    dbus-daemon        -1   2 /usr/local/share/dbus-1/system-services
+623    dbus-daemon        18   0 /usr/share/dbus-1/system-services
+623    dbus-daemon        -1   2 /lib/dbus-1/system-services
+623    dbus-daemon        18   0 /var/lib/snapd/dbus-1/system-services/
+628    irqbalance          6   0 /proc/interrupts
+628    irqbalance          6   0 /proc/stat
+628    irqbalance          6   0 /proc/irq/20/smp_affinity
+628    irqbalance          6   0 /proc/irq/0/smp_affinity
+628    irqbalance          6   0 /proc/irq/1/smp_affinity
+628    irqbalance          6   0 /proc/irq/8/smp_affinity
+628    irqbalance          6   0 /proc/irq/12/smp_affinity
+628    irqbalance          6   0 /proc/irq/14/smp_affinity
+628    irqbalance          6   0 /proc/irq/15/smp_affinity
+809    vminfo              4   0 /var/run/utmp
+623    dbus-daemon        -1   2 /usr/local/share/dbus-1/system-services
+623    dbus-daemon        18   0 /usr/share/dbus-1/system-services
+623    dbus-daemon        -1   2 /lib/dbus-1/system-services
+623    dbus-daemon        18   0 /var/lib/snapd/dbus-1/system-services/
+```
+
+
 6. Какой системный вызов использует uname -a? Приведите цитату из man по этому системному вызову, где описывается альтернативное местоположение в /proc, где можно узнать версию ядра и релиз ОС.
 
+
+не удалось найти данную информацию в Uuntu 20.04, ввиду отсутсвия в базовом образе раздела 2 man.
+
+```
+iva@c8:~ $ man 2 uname
+<cut>
+ uname()  returns system information in the structure pointed to by buf.
+       The utsname struct is defined in <sys/utsname.h>:
+
+ Part of the utsname information is also accessible  via  /proc/sys/ker‐
+       nel/{ostype, hostname, osrelease, version, domainname}
+</cut>
+```
+
+uname обращается к системному вызову uname(2) который возвращает структуру определенную в <sys/utsname.h>, так же часть информации utsname доступна через /proc/sys/kernel/{ostype, hostname, osrelease, version, domainname}
+
+
 7. Чем отличается последовательность команд через ; и через && в bash? Например:
+
+Выполнится в любом случае
 
 ```
 root@netology1:~# test -d /tmp/some_dir; echo Hi
 Hi
+```
+
+Команда echo выполнится только в том случае, если директория /tmp/some_dir существует
+
+```
 root@netology1:~# test -d /tmp/some_dir && echo Hi
 root@netology1:~#
 ```
 
+Отличие последовательности ';' и '&&' в том что с помощью ';' задаётся последовательное выполнение команд которые надо выполнить (слева на право), а с использование '&&' - логического операнда AND.
+
+В первом случае при использовании ';' вся последовательность выполнится в любом случае вне зависимости от результата выполнения каждой из команд или проверок, 
+при использовании '&&' последовательность будет прервана, если хотя бы одна команда или проверка не вернет code 0 или True.
+
 Есть ли смысл использовать в bash &&, если применить set -e?
+
+-e  Exit immediately if a command exits with a non-zero status.
+
+смысл в '&&' пропадает с применением set -e, так как будет осуществлён выход если хотя бы одна команда не вернет code 0, программы/команды могут возвращать не только статус 0.
+    дальнейшее выполнение при этом прекратится.
 
 8. Из каких опций состоит режим bash set -euxo pipefail и почему его хорошо было бы использовать в сценариях?
 
-9. Используя -o stat для ps, определите, какой наиболее часто встречающийся статус у процессов в системе. В man ps ознакомьтесь (/PROCESS STATE CODES) что значат дополнительные к основной заглавной буквы статуса процессов. Его можно не учитывать при расчете (считать S, Ss или Ssl равнозначными).
+set -euxo
 
+    -e  Exit immediately if a command exits with a non-zero status.
+    -u  Treat unset variables as an error when substituting.
+    -x  Print commands and their arguments as they are executed.
+    -o option-name
+
+	pipefail     the return value of a pipeline is the status of
+                           the last command to exit with a non-zero status,
+                           or zero if no command exited with a non-zero status
+
+    -e Если одна из команд скрипта завершается неуспешно, то весь скрипт немедленно завершается. 
+    -u Если работа с переменными завершается неуспешно, то весь скрирт немедленно завершается. 
+    -x Выполняемые команды отображаются на консоли 
+    -o pipefail - если одна из команд в pipe завершилась неуспешно, то весь pipe завершается с кодом ошибки этой команды.
+
+    Результат работы скрипта будет более предсказуем, возможно обрабатывать ошибки.
+
+9. Используя -o stat для ps, определите, какой наиболее часто встречающийся статус у процессов в системе. 
+    В man ps ознакомьтесь (/PROCESS STATE CODES) что значат дополнительные к основной заглавной буквы статуса процессов. 
+    Его можно не учитывать при расчете (считать S, Ss или Ssl равнозначными).
+
+```
+    D    uninterruptible sleep (usually IO)
+    I    Idle kernel thread
+    R    running or runnable (on run queue)
+    S    interruptible sleep (waiting for an event to complete)
+    T    stopped by job control signal
+    t    stopped by debugger during the tracing
+    W    paging (not valid since the 2.6.xx kernel)
+    X    dead (should never be seen)
+    Z    defunct ("zombie") process, terminated but not reaped by its parent
+```
+
+```
+vagrant@u8:~$ ps -o stat
+STAT
+Ss
+R+
+```
+
+    Наиболее часто встречающийся статус это S - прерываемый сон, процесс ожидает события завершения другого процесса, 
+    так же часто встречаются процессы со статусом R - процесс запущен или в очереди на запуск
+    I - неактивный поток ядра, 
+    при операциях ввода/вывода могут встречаться процессы со статусом D - неприрываемый сон, процесс ждет завершения чтения/записи. 
+
+
+    Так же у процессов могут встречаться дополнительные ключи, такие как < - высокоприоритетный процесс, N - низкоприоритетный процесс
+
+```
+          <    high-priority (not nice to other users)
+           N    low-priority (nice to other users)
+           L    has pages locked into memory (for real-time and custom IO)
+           s    is a session leader
+           l    is multi-threaded (using CLONE_THREAD, like NPTL pthreads
+                do)
+           +    is in the foreground process group
+```
+
+увидеть дополнительные параметры процессов можно выполнив $ps aux
