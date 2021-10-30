@@ -72,8 +72,9 @@ Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.servic
      Memory: 2.3M
      CGroup: /system.slice/node_exporter.service
              └─12969 /usr/sbin/node_exporter --collector.disable-defaults --collector.zoneinfo --collector.cpu --collector.processes --collector.netdev --collector.loadavg --collector.meminfo
+```
 
-
+```
    17  curl http://localhost:9100/metrics 
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -81,6 +82,9 @@ Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.servic
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0node_scrape_collector_duration_seconds{collector="zoneinfo"} 0.000370783
 node_scrape_collector_success{collector="zoneinfo"} 1
 
+```
+
+```
    18  sudo shutdown -r now
    19  curl http://localhost:9100/metrics
    20  sudo systemctl status node_exporter
@@ -96,22 +100,82 @@ node_scrape_collector_success{collector="zoneinfo"} 1
 
    21  history 
 
+```
 
 2. Ознакомьтесь с опциями node_exporter и выводом `/metrics` по-умолчанию. Приведите несколько опций, которые вы бы выбрали для базового 
     мониторинга хоста по CPU, памяти, диску и сети.
+
+    Доступные опции можно посмотреть вызвав с параметром --help
+
+```
+vagrant@u8:~$ node_exporter --help
+
+```
+базовые: 
+    --collector.disable-defaults используется для выключения, поскольку все метрики по-умолчанию включены
+    --collector.cpu - мониторинг cpu
+    --collector.meminfo - памяти
+    --collector.filesystem - файловой системы
+    --collector.netstat  - сетевого трафика
+    и/или
+    --collector.netdev - сетевых интерфейсов
+
 
 3. Установите в свою виртуальную машину [Netdata](https://github.com/netdata/netdata). 
     Воспользуйтесь [готовыми пакетами](https://packagecloud.io/netdata/netdata/install) для установки (`sudo apt install -y netdata`). После успешной установки:
 
     * в конфигурационном файле `/etc/netdata/netdata.conf` в секции [web] замените значение с localhost на `bind to = 0.0.0.0`,
+
+```
+vagrant@u8:~$ cat /etc/netdata/netdata.conf
+# NetData Configuration
+
+# The current full configuration can be retrieved from the running
+# server at the URL
+#
+#   http://localhost:19999/netdata.conf
+#
+# for example:
+#
+#   wget -O /etc/netdata/netdata.conf http://localhost:19999/netdata.conf
+#
+
+[global]
+    run as user = netdata
+    web files owner = root
+    web files group = root
+    # Netdata is not designed to be exposed to potentially hostile
+    # networks. See https://github.com/netdata/netdata/issues/164
+    #bind socket to IP = 127.0.0.1
+    bind to = 0.0.0.0
+```
+
     * добавьте в Vagrantfile проброс порта Netdata на свой локальный компьютер и сделайте `vagrant reload`:
 
-    ```bash
-    config.vm.network "forwarded_port", guest: 19999, host: 19999
     ```
+    config.vm.network "forwarded_port", guest: 19999, host: 19999
+
+    ```
+```
+iva@c8:~/Vagrant $ cat Vagrantfile 
+Vagrant.configure("2") do |config|
+  config.vm.box = "bento/ubuntu-20.04"
+  config.vm.hostname = 'u8.local'
+  config.vm.network "forwarded_port", guest: 19999, host: 19999
+  config.vm.provider :virtualbox do |v|
+    v.customize ['modifyvm', :id, '--natdnshostresolver1', 'on']
+    v.memory = 1024 * 3
+    v.cpus = 2 * 2
+  end
+end
+```
 
     После успешной перезагрузки в браузере *на своем ПК* (не в виртуальной машине) вы должны суметь зайти на `localhost:19999`. 
     Ознакомьтесь с метриками, которые по умолчанию собираются Netdata и с комментариями, которые даны к этим метрикам.
+
+IMG/netdata.png
+
+![Screenshot](./IMG/netdata.png)
 
 
 4. Можно ли по выводу `dmesg` понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе виртуализации?
