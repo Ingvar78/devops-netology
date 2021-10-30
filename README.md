@@ -11,6 +11,92 @@
     * предусмотрите возможность добавления опций к запускаемому процессу через внешний файл (посмотрите, например, на `systemctl cat cron`),
     * удостоверьтесь, что с помощью systemctl процесс корректно стартует, завершается, а после перезагрузки автоматически поднимается.
 
+История настройки:
+
+```
+vagrant@u8:~$ history 
+    1  sudo useradd node_exporter -s /sbin/nologin
+    2  wget https://github.com/prometheus/node_exporter/releases/download/v1.2.2/node_exporter-1.2.2.linux-amd64.tar.gz
+    3  tar xvfz node_exporter-1.2.2.linux-amd64.tar.gz
+    4  cd node_exporter-1.2.2.linux-amd64
+    5  sudo cp node_exporter /usr/sbin/
+    6  sudo touch /etc/systemd/system/node_exporter.service
+    7  sudo vi /etc/systemd/system/node_exporter.service
+    8  cat /etc/systemd/system/node_exporter.service
+
+[Unit]
+Description=Prometheus exporter for hardware and OS.
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/sysconfig/node_exporter
+ExecStart=/usr/sbin/node_exporter $NEX_OPTS
+KillMode=process
+KillSignal=SIGINT
+Restart=always
+RestartSec=10
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+
+```
+
+```
+    9  sudo mkdir -p /etc/sysconfig
+   10  sudo touch /etc/sysconfig/node_exporter
+   11  sudo vi /etc/sysconfig/node_exporter
+   12  sudo cat /etc/sysconfig/node_exporter
+
+NEX_OPTS="--collector.disable-defaults --collector.zoneinfo --collector.cpu --collector.processes  --collector.netdev --collector.loadavg --collector.meminfo"
+
+```
+
+```
+   13  sudo systemctl daemon-reload
+   14  sudo systemctl enable node_exporter
+
+Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.service → /etc/systemd/system/node_exporter.service.
+
+   15  sudo systemctl start node_exporter
+   16  sudo systemctl status node_exporter
+
+
+● node_exporter.service - Prometheus exporter for hardware and OS.
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2021-10-30 19:03:49 UTC; 5s ago
+   Main PID: 12969 (node_exporter)
+      Tasks: 6 (limit: 3484)
+     Memory: 2.3M
+     CGroup: /system.slice/node_exporter.service
+             └─12969 /usr/sbin/node_exporter --collector.disable-defaults --collector.zoneinfo --collector.cpu --collector.processes --collector.netdev --collector.loadavg --collector.meminfo
+
+
+   17  curl http://localhost:9100/metrics 
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0node_scrape_collector_duration_seconds{collector="zoneinfo"} 0.000370783
+node_scrape_collector_success{collector="zoneinfo"} 1
+
+   18  sudo shutdown -r now
+   19  curl http://localhost:9100/metrics
+   20  sudo systemctl status node_exporter
+
+● node_exporter.service - Prometheus exporter for hardware and OS.
+     Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sat 2021-10-30 19:07:02 UTC; 4min 57s ago
+   Main PID: 674 (node_exporter)
+      Tasks: 6 (limit: 3484)
+     Memory: 16.7M
+     CGroup: /system.slice/node_exporter.service
+             └─674 /usr/sbin/node_exporter --collector.disable-defaults --collector.zoneinfo --collector.cpu --collector.processes --collector.netdev --collector.loadavg --collector.meminfo
+
+   21  history 
+
+
 2. Ознакомьтесь с опциями node_exporter и выводом `/metrics` по-умолчанию. Приведите несколько опций, которые вы бы выбрали для базового 
     мониторинга хоста по CPU, памяти, диску и сети.
 
