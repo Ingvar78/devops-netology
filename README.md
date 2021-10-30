@@ -13,6 +13,8 @@
 
 История настройки:
 
+Создаем пользователя для node_exporter. Загружаем последнюю версию из репозитория, распаковываем. Создаем новый юнит, добавляем в него ссылку на внешний файл с настройками.
+
 ```
 vagrant@u8:~$ history 
     1  sudo useradd node_exporter -s /sbin/nologin
@@ -30,7 +32,7 @@ After=network.target
 
 [Service]
 Type=simple
-EnvironmentFile=/etc/sysconfig/node_exporter
+EnvironmentFile=/etc/sysconfig/node_exporter # внешний файл с настройками.
 ExecStart=/usr/sbin/node_exporter $NEX_OPTS
 KillMode=process
 KillSignal=SIGINT
@@ -41,8 +43,9 @@ Group=root
 
 [Install]
 WantedBy=multi-user.target
-
 ```
+
+    Создаем файл с настройками, отключаем значения по умолчанию и добавляем необходимые.
 
 ```
     9  sudo mkdir -p /etc/sysconfig
@@ -50,9 +53,13 @@ WantedBy=multi-user.target
    11  sudo vi /etc/sysconfig/node_exporter
    12  sudo cat /etc/sysconfig/node_exporter
 
-NEX_OPTS="--collector.disable-defaults --collector.zoneinfo --collector.cpu --collector.processes  --collector.netdev --collector.loadavg --collector.meminfo"
+
+NEX_OPTS="--collector.disable-defaults --collector.zoneinfo --collector.cpu --collector.processes  --collector.netdev --collector.netstat --collector.loadavg --collector.meminfo"
 
 ```
+
+    Запускаем, проверяем работу.
+
 
 ```
    13  sudo systemctl daemon-reload
@@ -72,9 +79,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.servic
      Memory: 2.3M
      CGroup: /system.slice/node_exporter.service
              └─12969 /usr/sbin/node_exporter --collector.disable-defaults --collector.zoneinfo --collector.cpu --collector.processes --collector.netdev --collector.loadavg --collector.meminfo
-```
 
-```
    17  curl http://localhost:9100/metrics 
 
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -82,9 +87,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/node_exporter.servic
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0node_scrape_collector_duration_seconds{collector="zoneinfo"} 0.000370783
 node_scrape_collector_success{collector="zoneinfo"} 1
 
-```
 
-```
    18  sudo shutdown -r now
    19  curl http://localhost:9100/metrics
    20  sudo systemctl status node_exporter
@@ -111,7 +114,8 @@ node_scrape_collector_success{collector="zoneinfo"} 1
 vagrant@u8:~$ node_exporter --help
 
 ```
-базовые: 
+
+    Базовые:
     --collector.disable-defaults используется для выключения, поскольку все метрики по-умолчанию включены
     --collector.cpu - мониторинг cpu
     --collector.meminfo - памяти
@@ -152,10 +156,9 @@ vagrant@u8:~$ cat /etc/netdata/netdata.conf
 
     * добавьте в Vagrantfile проброс порта Netdata на свой локальный компьютер и сделайте `vagrant reload`:
 
-    ```
     config.vm.network "forwarded_port", guest: 19999, host: 19999
 
-    ```
+
 ```
 iva@c8:~/Vagrant $ cat Vagrantfile 
 Vagrant.configure("2") do |config|
@@ -173,9 +176,7 @@ end
     После успешной перезагрузки в браузере *на своем ПК* (не в виртуальной машине) вы должны суметь зайти на `localhost:19999`. 
     Ознакомьтесь с метриками, которые по умолчанию собираются Netdata и с комментариями, которые даны к этим метрикам.
 
-IMG/netdata.png
-
-![Screenshot](./IMG/netdata.png)
+    ![Screenshot](./IMG/netdata.png)
 
 
 4. Можно ли по выводу `dmesg` понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе виртуализации?
