@@ -191,8 +191,6 @@ C точки зрения системы все жесткие ссылки эк
 
 1. Создайте `mkfs.ext4` ФС на получившемся LV.
 
-/dev/vg_shared/lv_100m
-
     ```bash
     root@u8:~# mkfs.ext4 /dev/vg_shared/lv_100m
     mke2fs 1.45.5 (07-Jan-2020)
