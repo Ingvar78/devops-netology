@@ -62,7 +62,10 @@ Connection closed by foreign host.
 
 3. Какой IP адрес у вас в интернете?
 
-95.31.137.252
+95.31.137.252 - ниже скрин сайта whoer.net
+
+![Screenshot](./img/MyIP.png)
+
 
 4. Какому провайдеру принадлежит ваш IP адрес? Какой автономной системе AS? Воспользуйтесь утилитой `whois` 
 
@@ -107,6 +110,107 @@ traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
 ```
 
 6. Повторите задание 5 в утилите `mtr`. На каком участке наибольшая задержка - delay?
+    наибольшие потери наблюдаются в AS15169 (Google)   10. AS15169  142.251.49.78       40.0%    10   19.6  19.3  19.1  19.6   0.2
+
+
+```bash
+iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ mtr 8.8.8.8 -z -b -r
+Start: 2021-11-19T01:52:59+0300
+HOST: c8.localdomain              Loss%   Snt   Last   Avg  Best  Wrst StDev
+  1. AS???    _gateway (192.168.1  0.0%    10    0.6   0.6   0.5   0.8   0.1
+  2. AS8402   95.31.0.1            0.0%    10    1.1   1.1   1.0   1.2   0.1
+  3. AS8402   78.107.15.1          0.0%    10    1.0   1.1   1.0   1.2   0.1
+  4. AS???    10.2.254.178         0.0%    10    1.2   1.2   1.1   1.4   0.1
+  5. AS8402   m9-crs-be3.corbina. 10.0%    10    2.0   2.1   2.0   2.3   0.1
+  6. AS8402   213.234.224.137      0.0%    10    2.8   2.7   2.6   2.9   0.1
+  7. AS8402   213.234.224.132      0.0%    10    2.6   2.8   2.6   3.3   0.2
+  8. AS8402   85.21.224.191        0.0%    10    2.7   2.7   2.6   2.9   0.1
+  9. AS15169  108.170.250.66       0.0%    10    4.0   4.0   3.8   4.2   0.1
+ 10. AS15169  142.251.49.78       40.0%    10   19.6  19.3  19.1  19.6   0.2
+ 11. AS15169  72.14.235.69         0.0%    10   15.8  15.7  15.6  15.9   0.1
+ 12. AS15169  172.253.51.237       0.0%    10   18.3  18.8  18.2  19.6   0.6
+ 13. AS???    ???                 100.0    10    0.0   0.0   0.0   0.0   0.0
+ 14. AS???    ???                 100.0    10    0.0   0.0   0.0   0.0   0.0
+ 15. AS???    ???                 100.0    10    0.0   0.0   0.0   0.0   0.0
+ 16. AS???    ???                 100.0    10    0.0   0.0   0.0   0.0   0.0
+ 17. AS???    ???                 100.0    10    0.0   0.0   0.0   0.0   0.0
+ 18. AS???    ???                 100.0    10    0.0   0.0   0.0   0.0   0.0
+ 19. AS???    ???                 100.0    10    0.0   0.0   0.0   0.0   0.0
+ 20. AS???    ???                 100.0    10    0.0   0.0   0.0   0.0   0.0
+ 21. AS???    ???                 100.0    10    0.0   0.0   0.0   0.0   0.0
+ 22. AS15169  dns.google (8.8.8.8 10.0%    10   17.7  17.7  17.5  17.9   0.1
+```
+
 7. Какие DNS сервера отвечают за доменное имя dns.google? Какие A записи? воспользуйтесь утилитой `dig`
+
+```bash
+iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ dig +trace @8.8.8.8 dns.google |grep dns
+; <<>> DiG 9.11.26-RedHat-9.11.26-4.el8_4 <<>> +trace @8.8.8.8 dns.google
+dns.google.		10800	IN	NS	ns1.zdns.google.
+dns.google.		10800	IN	NS	ns2.zdns.google.
+dns.google.		10800	IN	NS	ns4.zdns.google.
+dns.google.		10800	IN	NS	ns3.zdns.google.
+dns.google.		3600	IN	DS	56044 8 2 1B0A7E90AA6B1AC65AA5B573EFC44ABF6CB2559444251B997103D2E4 0C351B08
+dns.google.		3600	IN	RRSIG	DS 8 2 3600 20211209000308 20211117000308 8830 google. 7fV/3ABie9BAIZoKyvOSaHdhShqvVe7Q966vlOIc5H2xT2SBliZ8MDQX DGDLlWJiz/3VkUkyfLsKHDiaWIPv7iUIcnmzS3/Gz0gwRRiOs1r6sEzU B4SsKtTfw3fPmu3qhsWEFOpXcuM0UNko47gJYkEBuKJSM35Z0lCRhcw3 zkk=
+dns.google.		900	IN	A	8.8.8.8
+dns.google.		900	IN	A	8.8.4.4
+dns.google.		900	IN	RRSIG	A 8 2 900 20211218160930 20211118160930 1773 dns.google. BxWCV4eVJQtBSOpEBDhyDkdhqJaJPFYF8EMn/CVasAPsqfupmMNSukc6 8WsQWL4SBcywkTTFTQbkmTcXjJAdGFalZMSUtm96U6aYPtut1iCa8YpJ 56ODIqSX1sKHCrgIBsYrrN/KM5Eg7uZAQIBpBl2NYb/KqxiwsfF5QSnS 7O0=
+;; Received 241 bytes from 216.239.32.114#53(ns1.zdns.google) in 51 ms
+```
+
 8. Проверьте PTR записи для IP адресов из задания 7. Какое доменное имя привязано к IP? воспользуйтесь утилитой `dig`
 
+
+iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ dig +trace @8.8.8.8 dns.google |grep dns
+; <<>> DiG 9.11.26-RedHat-9.11.26-4.el8_4 <<>> +trace @8.8.8.8 dns.google
+dns.google.		10800	IN	NS	ns3.zdns.google.
+dns.google.		10800	IN	NS	ns1.zdns.google.
+dns.google.		10800	IN	NS	ns2.zdns.google.
+dns.google.		10800	IN	NS	ns4.zdns.google.
+dns.google.		3600	IN	DS	56044 8 2 1B0A7E90AA6B1AC65AA5B573EFC44ABF6CB2559444251B997103D2E4 0C351B08
+dns.google.		3600	IN	RRSIG	DS 8 2 3600 20211209000308 20211117000308 8830 google. 7fV/3ABie9BAIZoKyvOSaHdhShqvVe7Q966vlOIc5H2xT2SBliZ8MDQX DGDLlWJiz/3VkUkyfLsKHDiaWIPv7iUIcnmzS3/Gz0gwRRiOs1r6sEzU B4SsKtTfw3fPmu3qhsWEFOpXcuM0UNko47gJYkEBuKJSM35Z0lCRhcw3 zkk=
+dns.google.		900	IN	A	8.8.8.8
+dns.google.		900	IN	A	8.8.4.4
+dns.google.		900	IN	RRSIG	A 8 2 900 20211218160930 20211118160930 1773 dns.google. BxWCV4eVJQtBSOpEBDhyDkdhqJaJPFYF8EMn/CVasAPsqfupmMNSukc6 8WsQWL4SBcywkTTFTQbkmTcXjJAdGFalZMSUtm96U6aYPtut1iCa8YpJ 56ODIqSX1sKHCrgIBsYrrN/KM5Eg7uZAQIBpBl2NYb/KqxiwsfF5QSnS 7O0=
+;; Received 241 bytes from 216.239.34.114#53(ns2.zdns.google) in 50 ms
+iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ dig -x 8.8.8.8 
+
+; <<>> DiG 9.11.26-RedHat-9.11.26-4.el8_4 <<>> -x 8.8.8.8
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 25592
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;8.8.8.8.in-addr.arpa.		IN	PTR
+
+;; ANSWER SECTION:
+8.8.8.8.in-addr.arpa.	18406	IN	PTR	dns.google.
+
+;; Query time: 1 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Пт ноя 19 02:17:37 MSK 2021
+;; MSG SIZE  rcvd: 73
+
+iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ dig -x 8.8.4.4
+
+; <<>> DiG 9.11.26-RedHat-9.11.26-4.el8_4 <<>> -x 8.8.4.4
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 12229
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;4.4.8.8.in-addr.arpa.		IN	PTR
+
+;; ANSWER SECTION:
+4.4.8.8.in-addr.arpa.	78061	IN	PTR	dns.google.
+
+;; Query time: 3 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Пт ноя 19 02:17:44 MSK 2021
+;; MSG SIZE  rcvd: 73
