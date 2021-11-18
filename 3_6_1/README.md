@@ -163,7 +163,7 @@ dns.google.		900	IN	RRSIG	A 8 2 900 20211218160930 20211118160930 1773 dns.googl
 
 8. Проверьте PTR записи для IP адресов из задания 7. Какое доменное имя привязано к IP? воспользуйтесь утилитой `dig`
 
-
+```bash
 iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ dig +trace @8.8.8.8 dns.google |grep dns
 ; <<>> DiG 9.11.26-RedHat-9.11.26-4.el8_4 <<>> +trace @8.8.8.8 dns.google
 dns.google.		10800	IN	NS	ns3.zdns.google.
@@ -217,3 +217,4 @@ iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ dig -x 8.8.4.4
 ;; SERVER: 192.168.1.1#53(192.168.1.1)
 ;; WHEN: Пт ноя 19 02:17:44 MSK 2021
 ;; MSG SIZE  rcvd: 73
+```
