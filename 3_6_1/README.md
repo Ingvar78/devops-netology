@@ -87,29 +87,28 @@ source:         RIPE # Filtered
 проходит через две AS - Биллайн(Corbina) AS8402  и Google (AS15169)
 
 ```bash
-iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ traceroute 8.8.8.8
+iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ traceroute -A 8.8.8.8
 traceroute to 8.8.8.8 (8.8.8.8), 30 hops max, 60 byte packets
- 1  _gateway (192.168.1.1)  0.672 ms  0.735 ms  0.861 ms
- 2  95.31.0.1 (95.31.0.1)  2.764 ms  7.762 ms  7.746 ms
- 3  78.107.15.1 (78.107.15.1)  7.735 ms  7.724 ms  7.712 ms
- 4  10.2.254.178 (10.2.254.178)  7.784 ms  7.788 ms  7.777 ms
- 5  m9-crs-be3.corbina.net (195.14.54.141)  7.774 ms  7.763 ms  7.761 ms
- 6  * 213.234.224.137 (213.234.224.137)  5.069 ms *
- 7  213.234.224.132 (213.234.224.132)  4.413 ms * 72.14.198.182 (72.14.198.182)  9.253 ms
-
- 8  85.21.224.191 (85.21.224.191)  4.270 ms *  4.256 ms
- 9  * * 108.170.250.99 (108.170.250.99)  9.206 ms
-10  108.170.250.130 (108.170.250.130)  9.146 ms 108.170.250.129 (108.170.250.129)  9.179 ms 108.170.250.83 (108.170.250.83)  39.379 ms
-11  142.251.49.24 (142.251.49.24)  19.272 ms 209.85.255.136 (209.85.255.136)  20.846 ms 172.253.65.82 (172.253.65.82)  15.821 ms
-12  216.239.42.23 (216.239.42.23)  25.850 ms 172.253.64.55 (172.253.64.55)  22.355 ms 72.14.235.69 (72.14.235.69)  22.334 ms
-13  * * 108.170.232.251 (108.170.232.251)  25.462 ms
-14  * * 142.250.56.13 (142.250.56.13)  20.317 ms
+ 1  _gateway (192.168.1.1) [*]  0.605 ms  0.610 ms  0.676 ms
+ 2  95.31.0.1 (95.31.0.1) [AS8402]  2.988 ms  2.978 ms  2.965 ms
+ 3  78.107.15.1 (78.107.15.1) [AS8402]  7.927 ms  7.926 ms  7.917 ms
+ 4  10.2.254.178 (10.2.254.178) [*]  7.904 ms  7.923 ms  7.916 ms
+ 5  m9-crs-be3.corbina.net (195.14.54.141) [AS8402]  7.906 ms  7.892 ms  7.912 ms
+ 6  * * 213.234.224.137 (213.234.224.137) [AS8402]  4.775 ms
+ 7  213.234.224.132 (213.234.224.132) [AS8402]  5.059 ms *  4.989 ms
+ 8  * 85.21.224.191 (85.21.224.191) [AS8402]  4.887 ms *
+ 9  * * *
+10  108.170.250.33 (108.170.250.33) [AS15169]  9.754 ms 108.170.226.172 (108.170.226.172) [AS15169]  4.846 ms *
+11  * 108.170.235.64 (108.170.235.64) [AS15169]  21.931 ms *
+12  * 72.14.238.168 (72.14.238.168) [AS15169]  22.712 ms 216.239.47.173 (216.239.47.173) [AS15169]  27.722 ms
+13  * 142.250.56.215 (142.250.56.215) [AS15169]  22.631 ms 209.85.254.20 (209.85.254.20) [AS15169]  17.638 ms
+14  * 172.253.70.49 (172.253.70.49) [AS15169]  27.587 ms *
 15  * * *
 16  * * *
 17  * * *
 18  * * *
 19  * * *
-20  dns.google (8.8.8.8)  18.016 ms * *
+20  dns.google (8.8.8.8) [AS15169]  15.071 ms * *
 ```
 
 6. Повторите задание 5 в утилите `mtr`. На каком участке наибольшая задержка - delay?
@@ -146,19 +145,59 @@ HOST: c8.localdomain              Loss%   Snt   Last   Avg  Best  Wrst StDev
 
 7. Какие DNS сервера отвечают за доменное имя dns.google? Какие A записи? воспользуйтесь утилитой `dig`
 
+DNS сервера для dns.google:
+
 ```bash
-iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1 *)$ dig +trace @8.8.8.8 dns.google |grep dns
-; <<>> DiG 9.11.26-RedHat-9.11.26-4.el8_4 <<>> +trace @8.8.8.8 dns.google
-dns.google.		10800	IN	NS	ns1.zdns.google.
-dns.google.		10800	IN	NS	ns2.zdns.google.
-dns.google.		10800	IN	NS	ns4.zdns.google.
-dns.google.		10800	IN	NS	ns3.zdns.google.
-dns.google.		3600	IN	DS	56044 8 2 1B0A7E90AA6B1AC65AA5B573EFC44ABF6CB2559444251B997103D2E4 0C351B08
-dns.google.		3600	IN	RRSIG	DS 8 2 3600 20211209000308 20211117000308 8830 google. 7fV/3ABie9BAIZoKyvOSaHdhShqvVe7Q966vlOIc5H2xT2SBliZ8MDQX DGDLlWJiz/3VkUkyfLsKHDiaWIPv7iUIcnmzS3/Gz0gwRRiOs1r6sEzU B4SsKtTfw3fPmu3qhsWEFOpXcuM0UNko47gJYkEBuKJSM35Z0lCRhcw3 zkk=
-dns.google.		900	IN	A	8.8.8.8
-dns.google.		900	IN	A	8.8.4.4
-dns.google.		900	IN	RRSIG	A 8 2 900 20211218160930 20211118160930 1773 dns.google. BxWCV4eVJQtBSOpEBDhyDkdhqJaJPFYF8EMn/CVasAPsqfupmMNSukc6 8WsQWL4SBcywkTTFTQbkmTcXjJAdGFalZMSUtm96U6aYPtut1iCa8YpJ 56ODIqSX1sKHCrgIBsYrrN/KM5Eg7uZAQIBpBl2NYb/KqxiwsfF5QSnS 7O0=
-;; Received 241 bytes from 216.239.32.114#53(ns1.zdns.google) in 51 ms
+iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1)$ dig NS dns.google 
+
+; <<>> DiG 9.11.26-RedHat-9.11.26-4.el8_4 <<>> NS dns.google
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 2329
+;; flags: qr rd ra; QUERY: 1, ANSWER: 4, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;dns.google.			IN	NS
+
+;; ANSWER SECTION:
+dns.google.		86400	IN	NS	ns1.zdns.google.
+dns.google.		86400	IN	NS	ns4.zdns.google.
+dns.google.		86400	IN	NS	ns3.zdns.google.
+dns.google.		86400	IN	NS	ns2.zdns.google.
+
+;; Query time: 104 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Сб ноя 20 23:53:51 MSK 2021
+;; MSG SIZE  rcvd: 116
+```
+
+Поиск A записи:
+
+```bash
+iva@c8:~/Documents/netology/devops-netology/3_6_1  (3.6.1)$ dig A dns.google 
+
+; <<>> DiG 9.11.26-RedHat-9.11.26-4.el8_4 <<>> A dns.google
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 12771
+;; flags: qr rd ra; QUERY: 1, ANSWER: 2, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 4096
+;; QUESTION SECTION:
+;dns.google.			IN	A
+
+;; ANSWER SECTION:
+dns.google.		1195	IN	A	8.8.8.8
+dns.google.		1195	IN	A	8.8.4.4
+
+;; Query time: 3 msec
+;; SERVER: 192.168.1.1#53(192.168.1.1)
+;; WHEN: Сб ноя 20 23:53:57 MSK 2021
+;; MSG SIZE  rcvd: 71
+
 ```
 
 8. Проверьте PTR записи для IP адресов из задания 7. Какое доменное имя привязано к IP? воспользуйтесь утилитой `dig`
