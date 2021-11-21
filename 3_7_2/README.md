@@ -210,7 +210,7 @@ _gateway (192.168.1.1) at 60:31:97:3f:2f:cc [ether] on eno1
     Полная очистка в linux: ip neigh flush all или arp -d
     Полная очистка в Windows: arp -d
 
-    Только один ip в Linux: arp -d 192.168.1.10 или ip neigh del dev eno1 192.168.10.10
+    Только один ip в Linux: arp -d 192.168.1.10 или ip neigh del dev eno1 192.168.1.10
     Только один ip в Windows: arp -d 192.168.1.10
     
 
