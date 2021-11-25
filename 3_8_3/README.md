@@ -384,7 +384,17 @@ UNCONN           0                0              [::]:sunrpc                    
 
 5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали.
 
-![Screenshot](./img/HomeNet.drawio)
+![Screenshot](./img/HomeNet.png)
+
+```
+iva@c8:~/Documents/netology/devops-netology/3_8_3  (3.8.3)$ traceroute ya.ru -A
+traceroute to ya.ru (87.250.250.242), 30 hops max, 60 byte packets
+ 1  _gateway (192.168.1.1) [*]  0.514 ms  0.596 ms  0.654 ms
+ 2  95.31.0.1 (95.31.0.1) [AS8402]  3.006 ms  3.008 ms  8.008 ms
+ 3  78.107.15.1 (78.107.15.1) [AS8402]  8.005 ms  7.994 ms  7.984 ms
+ 4  10.2.254.178 (10.2.254.178) [*]  7.973 ms  7.963 ms  7.959 ms
+....
+```
 
  ---
 ## Задание для самостоятельной отработки (необязательно к выполнению)
