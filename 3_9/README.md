@@ -37,6 +37,17 @@
 
 7. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.
 
+```bash
+iva@c8:~ $ sudo tcpdump -c 100 -i eno1 -w eno1_dump.pcap
+dropped privs to tcpdump
+tcpdump: listening on eno1, link-type EN10MB (Ethernet), capture size 262144 bytes
+100 packets captured
+126 packets received by filter
+0 packets dropped by kernel
+```
+
+![Screenshot](./img/wsh1.png)
+
  ---
 ## Задание для самостоятельной отработки (необязательно к выполнению)
 
