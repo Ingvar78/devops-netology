@@ -33,7 +33,13 @@
 
 5. Установите на Ubuntu ssh сервер, сгенерируйте новый приватный ключ. Скопируйте свой публичный ключ на другой сервер. Подключитесь к серверу по SSH-ключу.
 
+![Screenshot](./img/ssh_vs_rsa.png)
+
+
 6. Переименуйте файлы ключей из задания 5. Настройте файл конфигурации SSH клиента, так чтобы вход на удаленный сервер осуществлялся по имени сервера.
+
+![Screenshot](./img/ssh_via_host.png)
+
 
 7. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.
 
@@ -53,33 +59,49 @@ tcpdump: listening on eno1, link-type EN10MB (Ethernet), capture size 262144 byt
 
 8*. Просканируйте хост scanme.nmap.org. Какие сервисы запущены?
 
+![Screenshot](./img/nmap.png)
+
+22/tcp    open     ssh 
+
+80/tcp    open     http 
+
+9929/tcp  open     nping-echo - эхо порт, настраиваемый nmap
+
+31337/TCP	Back Orifice — средство для удаленного администрирования (часто троянская программа)
+
 9*. Установите и настройте фаервол ufw на web-сервер из задания 3. Откройте доступ снаружи только к портам 22,80,443
+
+в задании 3 использовал centos, в ubuntu настройка файрволла выглядит следующим образом (проброшены другие порты выше 1000, т.к. vagrant не позволяет напрямую мапить 22 порт, 80 и 443):
+
+
+```bash
+vagrant@u8:~$ sudo ufw allow 8080/tcp
+Rules updated
+Rules updated (v6)
+vagrant@u8:~$ sudo ufw allow ssh/tcp
+Rules updated
+Rules updated (v6)
+vagrant@u8:~$ sudo ufw allow 8443/tcp
+Rules updated
+Rules updated (v6)
+vagrant@u8:~$ sudo ufw status
+Status: inactive
+vagrant@u8:~$ sudo ufw enable
+Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
+Firewall is active and enabled on system startup
+vagrant@u8:~$ sudo ufw status
+Status: active
+
+To                         Action      From
+--                         ------      ----
+8080/tcp                   ALLOW       Anywhere                  
+22/tcp                     ALLOW       Anywhere                  
+8443/tcp                   ALLOW       Anywhere                  
+8080/tcp (v6)              ALLOW       Anywhere (v6)             
+22/tcp (v6)                ALLOW       Anywhere (v6)             
+8443/tcp (v6)              ALLOW       Anywhere (v6)    
+```
 
 
  ---
-
-## Как сдавать задания
-
-Обязательными к выполнению являются задачи без указания звездочки. Их выполнение необходимо для получения зачета и диплома о профессиональной переподготовке.
-
-Задачи со звездочкой (*) являются дополнительными задачами и/или задачами повышенной сложности. Они не являются обязательными к выполнению, но помогут вам глубже понять тему.
-
-Домашнее задание выполните в файле readme.md в github репозитории. В личном кабинете отправьте на проверку ссылку на .md-файл в вашем репозитории.
-
-Также вы можете выполнить задание в [Google Docs](https://docs.google.com/document/u/0/?tgif=d) и отправить в личном кабинете на проверку ссылку на ваш документ.
-Название файла Google Docs должно содержать номер лекции и фамилию студента. Пример названия: "1.1. Введение в DevOps — Сусанна Алиева".
-
-Если необходимо прикрепить дополнительные ссылки, просто добавьте их в свой Google Docs.
-
-Перед тем как выслать ссылку, убедитесь, что ее содержимое не является приватным (открыто на комментирование всем, у кого есть ссылка), иначе преподаватель не сможет проверить работу. Чтобы это проверить, откройте ссылку в браузере в режиме инкогнито.
-
-[Как предоставить доступ к файлам и папкам на Google Диске](https://support.google.com/docs/answer/2494822?hl=ru&co=GENIE.Platform%3DDesktop)
-
-[Как запустить chrome в режиме инкогнито ](https://support.google.com/chrome/answer/95464?co=GENIE.Platform%3DDesktop&hl=ru)
-
-[Как запустить  Safari в режиме инкогнито ](https://support.apple.com/ru-ru/guide/safari/ibrw1069/mac)
-
-Любые вопросы по решению задач задавайте в чате Slack.
-
----
 
