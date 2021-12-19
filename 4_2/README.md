@@ -40,10 +40,48 @@ for result in result_os.split('\n'):
         print(prepare_result)
         break
 ```
+### Cкрипт:
+```python
+#!/usr/bin/env python3
+
+import os
+
+bash_command = ["cd ~/test/devops-netology/4_2/", "git status"]
+abs_path = os.path.abspath(os.path.expanduser(os.path.expandvars(bash_command[0].replace('cd ', ''))))
+result_os = os.popen(' && '.join(bash_command)).read()
+for result in result_os.split('\n'):
+    if result.find('modified') != -1:
+        prepare_result = result.replace('\tmodified:   ', '')
+        print(abs_path+'/'+prepare_result)
+    if result.find('renamed') != -1:
+        prepare_result = result.replace('\trenamed:    ', '')
+        print(abs_path+'/'+prepare_result)
+    if result.find('new file') != -1:
+        prepare_result = result.replace('\tnew file:   ', '')
+        print(abs_path+'/'+prepare_result)
+    if result.find('     ') != -1:
+        prepare_result = result.replace('\t     ', '')
+        print(abs_path+'/'+prepare_result)
+```
 
 ### Вывод скрипта при запуске при тестировании:
-```
-???
+```bash
+[iva@c8test test]$ ./test_change.py
+/home/iva/test/devops-netology/4_2/new file.txt
+/home/iva/test/devops-netology/4_2/test.py -> test1.py
+/home/iva/test/devops-netology/4_2/test_change.py
+[iva@c8test test]$ cd devops-netology/
+[iva@c8test devops-netology]$ git status
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        new file:   4_2/new file.txt
+        renamed:    4_2/test.py -> 4_2/test1.py
+        modified:   4_2/test_change.py
+
 ```
 
 ## Обязательная задача 3
@@ -51,12 +89,73 @@ for result in result_os.split('\n'):
 
 ### Ваш скрипт:
 ```python
-???
+#!/usr/bin/env python3
+
+import os, sys, getopt
+def main(argv):
+  path_git = ''
+  try:
+   opts, args = getopt.getopt(argv,"hp:","path=")
+  except getopt.GetoptError:
+   print ('test.py -p <path>')
+   sys.exit(2)
+  for opt, arg in opts:
+   if opt == '-h':
+     print ('for find changes: ./test.py -p <path> ')
+     sys.exit()
+   elif opt in ("-p", "--path"):
+     path_git = arg
+     print ('Path for check: ', path_git)
+     check_path = os.path.expanduser(path_git)
+   if not path_git or os.path.isdir(check_path) != 1:
+    print("git repo not accesible or the specified directory does not exist:" + path_git)
+    sys.exit()
+   path = os.path.abspath(path_git)
+   print (f'debug path: { path}')
+   modified = ('modified', 'renamed', 'new file')
+   not_a_git = ('not a git', 'not a git repo')
+   bash_command = ["cd " + path, "git status"]
+   result_os = os.popen(' && '.join(bash_command)).read()
+   is_change = False
+   for result in result_os.split('\n'):
+    for check_t in not_a_git:
+        if result.find(check_t) != -1:
+          print(path + ": this directory is not a git repository.")
+          is_change = True
+    for check_t in modified:
+        if result.find(check_t) != -1:
+            result = result.replace(f'\t{check_t}:','')
+            result = result.replace(' ','')
+            print(path + "/" + result)
+            is_change = True
+   if is_change != 1:
+        print(path + ": there are no changes in this git repository. working tree clean")
+
+
+if __name__ == "__main__":
+       main(sys.argv[1:])
 ```
 
 ### Вывод скрипта при запуске при тестировании:
-```
-???
+```bash
+[iva@c8test test]$ ./test3.py -p ./devops-netology/
+Path for check:  ./devops-netology/
+debug path: /home/iva/test/devops-netology
+/home/iva/test/devops-netology/4_2/newfile.txt
+/home/iva/test/devops-netology/4_2/test.py->4_2/test1.py
+/home/iva/test/devops-netology/4_2/test_change.py
+...
+[iva@c8test test]$ ./test3.py -p ./netology-devops/
+Path for check:  ./netology-devops/
+debug path: /home/iva/test/netology-devops
+/home/iva/test/netology-devops: there are no changes in this git repository. working tree clean
+...
+[iva@c8test test]$ ./test3.py -p /home/iva/test/devops-netology/
+Path for check:  /home/iva/test/devops-netology/
+debug path: /home/iva/test/devops-netology
+/home/iva/test/devops-netology/4_2/newfile.txt
+/home/iva/test/devops-netology/4_2/test.py->4_2/test1.py
+/home/iva/test/devops-netology/4_2/test_change.py
 ```
 
 ## Обязательная задача 4
