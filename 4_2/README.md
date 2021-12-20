@@ -156,6 +156,16 @@ debug path: /home/iva/test/devops-netology
 /home/iva/test/devops-netology/4_2/newfile.txt
 /home/iva/test/devops-netology/4_2/test.py->4_2/test1.py
 /home/iva/test/devops-netology/4_2/test_change.py
+...
+[iva@c8test test]$ ./test3.py -p /home/iva/test/devops
+Path for check:  /home/iva/test/devops
+git repo not accesible or the specified directory does not exist:/home/iva/test/devops
+[iva@c8test test]$ mkdir devops_null
+[iva@c8test test]$ ./test3.py -p /home/iva/test/devops_null/
+Path for check:  /home/iva/test/devops_null/
+debug path: /home/iva/test/devops_null
+fatal: not a git repository (or any of the parent directories): .git
+/home/iva/test/devops_null: there are no changes in this git repository. working tree clean
 ```
 
 ## Обязательная задача 4
