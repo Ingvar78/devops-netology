@@ -193,6 +193,7 @@ KeyboardInterrupt
 
 ### json-файл(ы), который(е) записал ваш скрипт:
 ```json
+
 [iva@c8test test]$ tail -n +1 *.json
 ==> drive.google.com.json <==
 {"drive.google.com": "173.194.222.194"}
