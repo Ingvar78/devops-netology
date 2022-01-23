@@ -1,0 +1,76 @@
+  263  cd Documents/devops-netology/
+  268  cd branching/
+  272  git status 
+  274  git add *
+  275  git status 
+  277  git commit -a -m "prepare for merge and rebase"
+  282  git switch -c git-merge
+  283  cd branching/
+  284  vi merge.sh 
+  285  git status 
+  286  git add merge.sh 
+  287  git status 
+  288  git commit -a -m "merge: @ instead *"
+  289  git push -u origin 
+  291  git status 
+  292  git push -u origin 
+  293  git push 
+  294  history | grep push
+  295  git push origin git-merge 
+  296  vi branching/merge.sh 
+  297  git status 
+  298  git commit -a -m "merge: use shift"
+  299  git status 
+  300  git push origin git-merge 
+  301  git checkout main 
+  303  cd branching/
+  306  vi branching/rebase.sh 
+  307  git status 
+  308  git commit -a -m "Изменим main"
+  309  git push origin 
+  310  git log 
+  313  git checkout 0465a246b8d76572db6cea8567985daf69ea2565
+  314  git switch -c git-rebase
+  315  vi branching/rebase.sh 
+  316  git commit -a -m "git-rebase 1"
+  317  vi branching/rebase.sh 
+  318  git status 
+  319  git commit -a -m "git-rebase 2"
+  320  git log 
+  321  git push origin git-rebase 
+  322  git merge git-merge
+  323  git status 
+  324  git checkout main 
+  325  git push 
+  326  git merge git-merge
+  328  git push origin 
+  329  git checkout git-rebase 
+  330  git rebase -i main
+  332  git status 
+  333  vi rebase.sh 
+  334  git add rebase.sh 
+  335  git rebase --continue
+  336  git status 
+  337  vi rebase.sh 
+  338  git status 
+  340  git add rebase.sh
+  342  cd branching/
+  343  git add rebase.sh 
+  344  git status 
+  345  git rebase --continue
+  346  git log 
+  347  cat rebase.sh 
+  348  git rebase --continue
+  349  git push -u origin git-rebase
+  350  git pull 
+  351  git pull origin 
+  352  git push -u origin git-rebase -f
+  353  git checkout main
+  354  git merge git-rebase
+  355  git pull origin 
+  356  clear 
+  357  git pull origin 
+  358  git pull origin --rebase 
+  359  git merge git-rebase
+  360  git push origin 
+
