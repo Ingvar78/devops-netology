@@ -124,6 +124,7 @@ Untagged: egerpro/nginx-nl:1.20.2
 iva@c8:~/Documents/docker $ docker images
 REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
 
+
 iva@c8:~/Documents/docker $ docker pull egerpro/nginx-nl:1.20.2
 1.20.2: Pulling from egerpro/nginx-nl
 97518928ae5f: Pull complete 
@@ -144,8 +145,9 @@ egerpro/nginx-nl   1.20.2    1cbb7153fe19   26 minutes ago   23.2MB
 
 </details>
 
-[содержимое докер файла](/src/build/docker/)
+[содержимое докер файла](./src/build/docker/)
 
+```bash
 iva@c8:~/Documents/docker $ docker pull egerpro/nginx-nl:1.20.2
 1.20.2: Pulling from egerpro/nginx-nl
 97518928ae5f: Pull complete 
@@ -161,7 +163,7 @@ docker.io/egerpro/nginx-nl:1.20.2
 iva@c8:~/Documents/docker $ docker images
 REPOSITORY         TAG       IMAGE ID       CREATED          SIZE
 egerpro/nginx-nl   1.20.2    1cbb7153fe19   26 minutes ago   23.2MB
-
+```
 
 https://hub.docker.com/repository/docker/egerpro/nginx-nl
 
