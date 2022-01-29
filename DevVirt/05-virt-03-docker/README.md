@@ -40,6 +40,10 @@ Hey, Netology
      <summary>Решение Задачи 1</summary>
     <br>
 
+Регистрируемся [hub.docker.com](https://hub.docker.com/)
+Образ буду использовать nginx:stable-alpine - 1.20.2 на момент выполнения.
+
+
 ```bash
 iva@c8:~/Documents/docker $ docker pull nginx:stable-alpine
 iva@c8:~/Documents/docker $ docker images
@@ -48,6 +52,7 @@ nginx        stable          d6c9558ba445   2 days ago     141MB
 nginx        1.21.6-alpine   bef258acf10d   3 days ago     23.4MB
 nginx        1.21.5-alpine   cc44224bfe20   4 weeks ago    23.5MB
 nginx        stable-alpine   373f8d4d4c60   2 months ago   23.2MB
+
 iva@c8:~/Documents/docker $ docker build -t egerpro/nginx-nl:1.20.2 .
 Sending build context to Docker daemon   5.12kB
 Step 1/2 : FROM nginx:1.20.2-alpine
@@ -65,6 +70,10 @@ nginx              1.21.6-alpine   bef258acf10d   3 days ago       23.4MB
 nginx              1.21.5-alpine   cc44224bfe20   4 weeks ago      23.5MB
 nginx              1.20.2-alpine   373f8d4d4c60   2 months ago     23.2MB
 nginx              stable-alpine   373f8d4d4c60   2 months ago     23.2MB
+```
+
+Запускаем контейнер, тестируем
+```bash
 iva@c8:~/Documents/docker $ docker run --name test-page -p 80:80 -d egerpro/nginx-nl:1.20.2 
 b42c9de835840b2916fbfaf68d0004ded071e921cb5dd6c0e00d0ce01a3f1362
 iva@c8:~/Documents/docker $ curl localhost
@@ -75,7 +84,7 @@ iva@c8:~/Documents/docker $ curl localhost
     </body>
 </html>
 ```
-
+ещё пару проверок:
 ```bash
 iva@c8:~/Documents/docker $ docker ps
 CONTAINER ID   IMAGE                     COMMAND                  CREATED          STATUS          PORTS                               NAMES
@@ -94,7 +103,10 @@ iva@c8:~/Documents/docker $ docker exec -it for_test_nginx sh
     </body>
 </html>
 / # 
+```
 
+Push-им и чистим локальное ранее загруженные/созданные образы
+```bash
 va@c8:~/Documents/docker $ docker login
 Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
 Username: egerpro
@@ -118,13 +130,15 @@ e419fa208fe1: Mounted from library/nginx
 
 iva@c8:~/Documents/docker $ docker rmi -f $(docker images -aq)
 Untagged: egerpro/nginx-nl:1.20.2
-```
+...
 
-```bash
 iva@c8:~/Documents/docker $ docker images
 REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+```
 
+загружаем заново
 
+```bash
 iva@c8:~/Documents/docker $ docker pull egerpro/nginx-nl:1.20.2
 1.20.2: Pulling from egerpro/nginx-nl
 97518928ae5f: Pull complete 
@@ -141,6 +155,7 @@ iva@c8:~/Documents/docker $ docker images
 REPOSITORY         TAG       IMAGE ID       CREATED          SIZE
 egerpro/nginx-nl   1.20.2    1cbb7153fe19   26 minutes ago   23.2MB
 ```
+
 ссылка на docker-репозиторий: https://hub.docker.com/repository/docker/egerpro/nginx-nl
 
 </details>
