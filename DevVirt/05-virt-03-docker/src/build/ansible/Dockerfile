@@ -1,4 +1,4 @@
-FROM alpine:3.14
+FROM alpine:3.15
 
 RUN CARGO_NET_GIT_FETCH_WITH_CLI=1 && \
     apk --no-cache add \
@@ -22,7 +22,7 @@ RUN CARGO_NET_GIT_FETCH_WITH_CLI=1 && \
         build-base && \
     pip install --upgrade pip wheel && \
     pip install --upgrade cryptography cffi && \
-    pip install ansible==2.9.24 && \
+    pip install ansible==2.10.7 && \
     pip install mitogen ansible-lint jmespath && \
     pip install --upgrade pywinrm && \
     apk del build-dependencies && \
