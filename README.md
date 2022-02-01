@@ -64,7 +64,7 @@
 
 5.2. [x] [Применение принципов IaaC в работе с виртуальными машинами](DevVirt/05-virt-02-iaac/README.md)
 
-5.3. [Введение. Экосистема. Архитектура. Жизненный цикл Docker контейнера](DevVirt/05-virt-03-docker/README.md)
+5.3. [x] [Введение. Экосистема. Архитектура. Жизненный цикл Docker контейнера](DevVirt/05-virt-03-docker/README.md)
 
 5.4. [Оркестрация группой Docker контейнеров на примере Docker Compose.](DevVirt/05-virt-04-docker-compose/README.md)
 
