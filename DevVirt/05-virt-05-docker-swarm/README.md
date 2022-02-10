@@ -106,7 +106,7 @@ will not be able to restart the manager.
 ```
 
 <details>
-     <summary>Процесс решение задачь</summary>
+     <summary>Процесс решение задач</summary>
     <br>
 Создание сети
 
