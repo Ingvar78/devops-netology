@@ -1,116 +1,5 @@
-# Домашнее задание к занятию "5.5. Оркестрация кластером Docker контейнеров на примере Docker Swarm"
-
----
-
-## Задача 1
-
-Дайте письменые ответы на следующие вопросы:
-
-- В чём отличие режимов работы сервисов в Docker Swarm кластере: replication и global?
-Основное отличие режима работы сервисов Replicated от Global заключается в том, что для replicated сервисов указывается количество идентичных задач которые необходимо запустить, в случа global сервис разворачивается в единственном экземпляре на каждой ноде. 
-Режим global подходит для однотипных задач которые требуется гарантированно запускать в единственном экземпляре на каждой из нод - например агенты мониторинга, антивирусные сканеры. 
-Режим replicated подходит для запуска заранее известного количества экземпляров приложения - например когда требуется поднять несколько экземпляров nginx или другого web-сервера отвечающих за один и тот же контент.
-
-# https://docs.docker.com/engine/swarm/how-swarm-mode-works/services/
-
-- Какой алгоритм выбора лидера используется в Docker Swarm кластере?
-
-Raft Consensus Algorithm - Raft — это протокол для реализации распределенного консенсуса. Нода может находиться в 1 из 3 состояний: Follower, Candidate, Leader.
-Все ноды на старте имеют статус Follower. Если Follower не получают отклика от Leader они могут перейти в статус Candidate, после чего Candidate запрашивают голоса других нод.
-Ноды отвечают своими голосами, Candidate становится Leader-ом если получает большинство голосов нод. После определения Leader-а все изменения в системе проходят через него.
-Однако в случае если в системе будет недоступно более половины нод, то определить лидера не получится, т.к. не будет кворума.
-
-# http://thesecretlivesofdata.com/raft/
-
-- Что такое Overlay Network?
-
-Виртуальная/логическая сеть, которая построена поверх другой уже существующей сети, в качестве примера можно привести vpn-сети 
-
-Overlay network создаёт распределенную сеть между несколькими узлами Docker. Эта сеть находится поверх сети (overlay) хоста, позволяя контейнерам, подключенным к ней (включая контейнеры службы swarm), безопасно обмениваться данными при включенном шифровании. 
-Docker прозрачно обрабатывает маршрутизацию каждого пакета от и к правильному хосту Docker и правильному контейнеру назначения.
-
-
-## Задача 2
-
-Создать ваш первый Docker Swarm кластер в Яндекс.Облаке
-
-Для получения зачета, вам необходимо предоставить скриншот из терминала (консоли), с выводом команды:
-```
-docker node ls
-```
-
-```bash
-iva@c8:~/Documents/netology/5.5/terraform $ ssh centos@51.250.2.51
-[centos@node01 ~]$ sudo -i
-[root@node01 ~]# docker node ls
-ID                            HOSTNAME             STATUS    AVAILABILITY   MANAGER STATUS   ENGINE VERSION
-70onbixmxu8n6y4o4als66ieo *   node01.netology.yc   Ready     Active         Leader           20.10.12
-njd8w1x9ywuqzpd9e3fyej32x     node02.netology.yc   Ready     Active         Reachable        20.10.12
-gr0jet9q7exsdppv6arcmm0ga     node03.netology.yc   Ready     Active         Reachable        20.10.12
-xfq5ri61qakxuw7wvcf3w6ndy     node04.netology.yc   Ready     Active                          20.10.12
-y439ja0d8odji2slpdiqjhxh2     node05.netology.yc   Ready     Active                          20.10.12
-8lorrvchrg9wexu0s6nqk017z     node06.netology.yc   Ready     Active                          20.10.12
-```
-
-## Задача 3
-
-Создать ваш первый, готовый к боевой эксплуатации кластер мониторинга, состоящий из стека микросервисов.
-
-Для получения зачета, вам необходимо предоставить скриншот из терминала (консоли), с выводом команды:
-```
-docker service ls
-```
-
-```bash
-[root@node01 ~]# docker service ls
-ID             NAME                                MODE         REPLICAS   IMAGE                                          PORTS
-0y9nj5uswo5t   swarm_monitoring_alertmanager       replicated   1/1        stefanprodan/swarmprom-alertmanager:v0.14.0    
-y7x9wff4mcuq   swarm_monitoring_caddy              replicated   1/1        stefanprodan/caddy:latest                      *:3000->3000/tcp, *:9090->9090/tcp, *:9093-9094->9093-9094/tcp
-jyhui2qen0ve   swarm_monitoring_cadvisor           global       6/6        google/cadvisor:latest                         
-69gvi13cacr2   swarm_monitoring_dockerd-exporter   global       6/6        stefanprodan/caddy:latest                      
-39g4pgd86fh6   swarm_monitoring_grafana            replicated   1/1        stefanprodan/swarmprom-grafana:5.3.4           
-o1tnq4eet1yt   swarm_monitoring_node-exporter      global       6/6        stefanprodan/swarmprom-node-exporter:v0.16.0   
-ua7pdnwkprmk   swarm_monitoring_prometheus         replicated   1/1        stefanprodan/swarmprom-prometheus:v2.5.0       
-mxo9oqqgleqz   swarm_monitoring_unsee              replicated   1/1        cloudflare/unsee:v0.8.0   
-```
-
-## Задача 4 (*)
-
-Выполнить на лидере Docker Swarm кластера команду (указанную ниже) и дать письменное описание её функционала, что она делает и зачем она нужна:
-```
-# см.документацию: https://docs.docker.com/engine/swarm/swarm_manager_locking/
-docker swarm update --autolock=true
-```
-
-Включает автоблокировку Swarm менеджера, что позволяет защитить конфигурацию сервисов и данных в случаях несанкционированного получения доступа к зашифрованному Raft логу.
-
-Для включения автоблокировки при развёртывании swarm используется ключ --autolock: docker swarm init --autolock
-
-При рестарте Docker для разблокировки manager Swarm необходимо ввести ключ шифрования, который был создан/сгенерирован Docker-ом во время блокировки Swarm.
-
-При перезапуске Docker ключ TLS, используемый для шифрования связи между узлами Swarm, и ключ, используемый для шифрования и дешифрования журналов Raft на диске, загружаются в память каждой manger-ноды.
-
-Docker умеет защищать общий ключ шифрования TLS и ключ, используемый для шифрования и дешифрования журналов Raft, за счет требования ручной разблокировки менеджеров в виде ввода ключа шифрования.
-
-
-```bash
-[root@node01 ~]# docker swarm update --autolock=true
-Swarm updated.
-To unlock a swarm manager after it restarts, run the `docker swarm unlock`
-command and provide the following key:
-
-    SWMKEY-1-WGSRRm8BPuB5x7n+XGeOU5SpISItgS3DYnIiK+aHCSQ
-
-Please remember to store this key in a password manager, since without it you
-will not be able to restart the manager.
-```
-
-<details>
-     <summary>Процесс решение задачь</summary>
-    <br>
 Создание сети
 
-```bash
 $ yc vpc network create \
 --name net \
 --labels my-label=netology \
@@ -135,15 +24,11 @@ $ yc vpc subnet create \
 +----------------------+----------+----------------------+----------------+---------------+---------------+
 | e9b950s9e720269srcg3 | subnet-n | enp9knlmbqf7k3q180io |                | ru-central1-a | [10.1.2.0/24] |
 +----------------------+----------+----------------------+----------------+---------------+---------------+
-```
 
 Правим 
-
 cd packer
-
 centos-7-base.json 
 
-```bash
 $ yc config list
 token: AQAEA7*********************************
 cloud-id: b1gos10ashr7cgusvgg9
@@ -161,6 +46,7 @@ $ grep -E 'folder_id|subnet_id|token' centos-7-base.json
       "token": "AQAEA7*********************************",
 
 $ packer validate centos-7-base.json
+
 
 $ packer build centos-7-base.json
 yandex: output will be in this color.
@@ -213,30 +99,26 @@ $ yc iam service-account list
 yc resource-manager folder add-access-binding netology \
     --role editor \
     --subject serviceAccount:ajef2o19q2h1q0mbvopa
-```
+
 
 перехоим в terraform и правим `provider.tf`
 
-```bash
 $ cd ../terraform
-```
 
 создадим файл секретов сервисного аккаунта
 
-```bash
 $ yc iam key create --service-account-name deployer-sa --output key.json
 id: ajehrrrsh6mj485tcgnk
 service_account_id: ajef2o19q2h1q0mbvopa
 created_at: "2022-02-09T22:15:35.150560934Z"
 key_algorithm: RSA_2048
-```
 
 далее правим variables.tf
+данные для заполнения - облака и каталога берём из вывода
+$ yc config list
+образа 
+$ yc compute image list
 
-данные для заполнения - облака и каталога берём из вывода 'yc config list'
-образа - 'yc compute image list'
-
-```bash
 $ yc config list
 token: AQAEA7*********************************
 cloud-id: b1gos10ashr7cgusvgg9
@@ -248,11 +130,10 @@ $ yc compute image list
 +----------------------+---------------+--------+----------------------+--------+
 | fd8pj96cusik2f6mjbet | centos-7-base | centos | f2e40ohi7d1hori8m71b | READY  |
 +----------------------+---------------+--------+----------------------+--------+
-```
+
 
 Инициализация конфигурации
 
-```bash
 $ terraform init
 ....
 Terraform has been successfully initialized!
@@ -279,11 +160,8 @@ Changes to Outputs:
   + internal_ip_address_node05 = "192.168.101.15"
   + internal_ip_address_node06 = "192.168.101.16"
 ...
-```
 
 Применяем план
-
-```bash
 $ terraform apply -auto-approve
 
 null_resource.monitoring (local-exec): PLAY RECAP *********************************************************************
@@ -309,11 +187,10 @@ internal_ip_address_node03 = "192.168.101.13"
 internal_ip_address_node04 = "192.168.101.14"
 internal_ip_address_node05 = "192.168.101.15"
 internal_ip_address_node06 = "192.168.101.16"
-```
+
 
 
 Проверка статуса нод в кластере:
-
 ```bash
 iva@c8:~/Documents/netology/5.5/terraform $ ssh centos@51.250.2.51
 [centos@node01 ~]$ sudo -i
@@ -398,6 +275,5 @@ will not be able to restart the manager.
 
 ```bash
 $ terraform destroy
+
 $ yc compute image delete --id 'fd8pj96cusik2f6mjbet'
-```
-</details>
