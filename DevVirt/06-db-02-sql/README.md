@@ -610,4 +610,5 @@ Foreign-key constraints:
 Полезные ссылки по теме:
 
 [postgres on dockerhub](https://hub.docker.com/_/postgres)
+
 [Запускаем PostgreSQL в Docker: от простого к сложному](https://habr.com/ru/post/578744/)

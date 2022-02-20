@@ -68,11 +68,11 @@
 
 5.4. [x] [Оркестрация группой Docker контейнеров на примере Docker Compose.](DevVirt/05-virt-04-docker-compose/README.md)
 
-5.5. [ Оркестрация кластером Docker контейнеров на примере Docker Swarm.](DevVirt/05-virt-05-docker-swarm/README.md)
+5.5. [x] [ Оркестрация кластером Docker контейнеров на примере Docker Swarm.](DevVirt/05-virt-05-docker-swarm/README.md)
 
 ## Модуль 6. Администрирование баз данных
 
-6.1. [Типы и структура СУБД](DevVirt/06-db-01-basics)
+6.1. [x] [Типы и структура СУБД](DevVirt/06-db-01-basics)
 
 6.2. [SQL](DevVirt/06-db-02-sql)
 
