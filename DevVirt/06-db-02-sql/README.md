@@ -490,6 +490,8 @@ explain (FORMAT JSON) select * from clients c join orders o on c.заказ =o.i
 
 Создайте бэкап БД test_db и поместите его в volume, предназначенный для бэкапов (см. Задачу 1).
 
+Остановите контейнер с PostgreSQL (но не удаляйте volumes).
+
 ```bash
 35fcae85d34c:~$ exit
 / # chown -R postgres:postgres /var/lib/postgresql/backup/
@@ -522,8 +524,10 @@ Stopping pg_postgres_1 ... done
 Removing pg_postgres_1 ... done
 Removing network pg_default
 ```
-Остановите контейнер с PostgreSQL (но не удаляйте volumes).
 
+Поднимите новый пустой контейнер с PostgreSQL.
+
+```bash
 iva@c8:~/Documents/pg $ docker run --name pg-12.10 -p 5432:5432 -e POSTGRES_PASSWORD=pgpwd4test -e PGDATA=/var/lib/postgresql/data/pgdata -d -v "$(pwd)/newdata":/var/lib/postgresql/data -v "/home/iva/Documents/pg/backup":/var/lib/postgresql/backup:rw postgres:12.10
 a3bc52374743593a584cc39466e9fcf6d0374e080663cb4f886f24f23c55a9c3
 iva@c8:~/Documents/pg $ ls -la
@@ -537,8 +541,7 @@ drwx------. 19 avahi root  4096 фев 20 21:49 pgdata
 iva@c8:~/Documents/pg $ docker ps
 CONTAINER ID   IMAGE            COMMAND                  CREATED          STATUS          PORTS                                       NAMES
 a3bc52374743   postgres:12.10   "docker-entrypoint.s…"   56 seconds ago   Up 55 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   pg-12.10
-
-Поднимите новый пустой контейнер с PostgreSQL.
+```
 
 Восстановите БД test_db в новом контейнере.
 
