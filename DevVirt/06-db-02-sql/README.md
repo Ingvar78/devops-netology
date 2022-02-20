@@ -607,8 +607,7 @@ Foreign-key constraints:
 
 ---
 
-### Как cдавать задание
+Полезные ссылки по теме:
 
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
-
----
+[postgres on dockerhub](https://hub.docker.com/_/postgres)
+[Запускаем PostgreSQL в Docker: от простого к сложному](https://habr.com/ru/post/578744/)
