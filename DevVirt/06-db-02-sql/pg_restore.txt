@@ -1,0 +1,173 @@
+postgres@a3bc52374743:~/backup$ psql -U postgres -W test_db < dump_test_db 
+Password: 
+SET
+SET
+SET
+ERROR:  cannot drop the currently open database
+ERROR:  current user cannot be dropped
+ERROR:  role "test-admin-user" does not exist
+ERROR:  role "test-simple-user" does not exist
+ERROR:  role "postgres" already exists
+ALTER ROLE
+CREATE ROLE
+ALTER ROLE
+CREATE ROLE
+ALTER ROLE
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+UPDATE 1
+DROP DATABASE
+CREATE DATABASE
+ALTER DATABASE
+Password: 
+You are now connected to database "template1" as user "postgres".
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+COMMENT
+ALTER DATABASE
+Password: 
+You are now connected to database "template1" as user "postgres".
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+REVOKE
+GRANT
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+DROP DATABASE
+CREATE DATABASE
+ALTER DATABASE
+Password: 
+You are now connected to database "postgres" as user "postgres".
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+COMMENT
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+ERROR:  database "test_db" already exists
+ALTER DATABASE
+Password: 
+You are now connected to database "test_db" as user "postgres".
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+SET
+SET
+CREATE TABLE
+ALTER TABLE
+CREATE SEQUENCE
+ALTER TABLE
+ALTER SEQUENCE
+CREATE TABLE
+ALTER TABLE
+CREATE SEQUENCE
+ALTER TABLE
+ALTER SEQUENCE
+ALTER TABLE
+ALTER TABLE
+COPY 5
+COPY 5
+ setval 
+--------
+      5
+(1 row)
+
+ setval 
+--------
+      5
+(1 row)
+
+ALTER TABLE
+ALTER TABLE
+CREATE INDEX
+ALTER TABLE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+postgres@a3bc52374743:~/backup$ 

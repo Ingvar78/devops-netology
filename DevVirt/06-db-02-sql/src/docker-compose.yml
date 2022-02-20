@@ -1,0 +1,17 @@
+version: "3.15"
+services:
+  postgres:
+    image: postgres:12.10-alpine3.15
+    environment:
+      POSTGRES_PASSWORD: "pgpwd4test"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      - ./backup:/var/lib/postgresql/backup
+    ports:
+      - "5432:5432"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4G
