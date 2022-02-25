@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  mysqldb:
+    image: mysql/mysql-server:8.0
+    restart: always
+    environment:
+      MYSQL_USER: 'mysql_adm'
+      MYSQL_PASSWORD: 'pwd4test'
+      MYSQL_DATABASE: 'test_db'
+      MYSQL_ROOT_PASSWORD: 'pwd4root'
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./backup:/var/lib/mysql-backup
+      - ./restore:/var/lib/mysql-restore
+      - ./config/my.cnf:/etc/my.cnf
+    ports:
+      - "3306:3306"
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
