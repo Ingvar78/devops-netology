@@ -74,11 +74,11 @@
 
 6.1. [x] [Типы и структура СУБД](DevVirt/06-db-01-basics)
 
-6.2. [SQL](DevVirt/06-db-02-sql)
+6.2. [x] [SQL](DevVirt/06-db-02-sql)
 
-6.3. [MySQL](DevVirt/06-db-03-mysql)
+6.3. [x] [MySQL](DevVirt/06-db-03-mysql)
 
-6.4. [PostgreSQL](DevVirt/06-db-04-postgresql)
+6.4. [x] [PostgreSQL](DevVirt/06-db-04-postgresql)
 
 6.5. [Elasticsearch](DevVirt/06-db-05-elasticsearch)
 
