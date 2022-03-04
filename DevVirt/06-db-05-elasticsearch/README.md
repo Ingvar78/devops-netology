@@ -23,6 +23,8 @@
 - ссылку на образ в репозитории dockerhub
 - ответ `elasticsearch` на запрос пути `/` в json виде
 
+curl -X GET "https://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=50s&pretty" --key certificates/elasticsearch-ca.pem  -k -u elasticuser
+
 Подсказки:
 - возможно вам понадобится установка пакета perl-Digest-SHA для корректной работы пакета shasum
 - при сетевых проблемах внимательно изучите кластерные и сетевые настройки в elasticsearch.yml
