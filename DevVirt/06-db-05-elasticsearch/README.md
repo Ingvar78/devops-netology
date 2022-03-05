@@ -178,6 +178,27 @@ iva@c8:~/Documents/ES/6.5+ $ curl -X DELETE "localhost:9200/ind-3?pretty"
 {
   "acknowledged" : true
 }
+iva@c8:~/Documents/ES/6.5+ $ curl -X GET http://localhost:9200/_cluster/health | python3 -m json.tool
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   397  100   397    0     0   129k      0 --:--:-- --:--:-- --:--:--  129k
+{
+    "cluster_name": "netology_test_cluster",
+    "status": "green",
+    "timed_out": false,
+    "number_of_nodes": 1,
+    "number_of_data_nodes": 1,
+    "active_primary_shards": 1,
+    "active_shards": 1,
+    "relocating_shards": 0,
+    "initializing_shards": 0,
+    "unassigned_shards": 0,
+    "delayed_unassigned_shards": 0,
+    "number_of_pending_tasks": 0,
+    "number_of_in_flight_fetch": 0,
+    "task_max_waiting_in_queue_millis": 0,
+    "active_shards_percent_as_number": 100.0
+}
 
 ```
 
@@ -194,32 +215,108 @@ iva@c8:~/Documents/ES/6.5+ $ curl -X DELETE "localhost:9200/ind-3?pretty"
 
 Создайте директорию `{путь до корневой директории с elasticsearch в образе}/snapshots`.
 
+
 Используя API [зарегистрируйте](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-register-repository.html#snapshots-register-repository) 
 данную директорию как `snapshot repository` c именем `netology_backup`.
 
 **Приведите в ответе** запрос API и результат вызова API для создания репозитория.
 
+```bash
+iva@c8:~/Documents/ES/6.5+ $ curl -X PUT "localhost:9200/_snapshot/netology_backup?verify=false&pretty" -H 'Content-Type: application/json' -d'
+> {
+>   "type": "fs",
+>   "settings": {
+>     "location": "/var/lib/elasticsearch/snapshots"
+>   }
+> }
+> '
+{
+  "acknowledged" : true
+}
+```
+
 Создайте индекс `test` с 0 реплик и 1 шардом и **приведите в ответе** список индексов.
+
+```bash
+iva@c8:~/Documents/ES/6.5+ $ curl -k -X GET 'http://localhost:9200/_cat/indices?v'
+health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test  OVHYrxi4QTus4WG9ZLPU1w   1   0          0            0       225b           225b
+```
 
 [Создайте `snapshot`](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-take-snapshot.html) 
 состояния кластера `elasticsearch`.
 
 **Приведите в ответе** список файлов в директории со `snapshot`ами.
 
+```bash
+sh-4.2$ ls -la /var/lib/elasticsearch/snapshots/
+total 32
+drwxr-xr-x. 1 elastic elastic   134 Mar  5 20:56 .
+drwxr-xr-x. 1 elastic elastic    47 Mar  5 17:57 ..
+-rw-r--r--. 1 elastic elastic   843 Mar  5 20:56 index-0
+-rw-r--r--. 1 elastic elastic     8 Mar  5 20:56 index.latest
+drwxr-xr-x. 4 elastic elastic    66 Mar  5 20:56 indices
+-rw-r--r--. 1 elastic elastic 17426 Mar  5 20:56 meta-04NT9A1qTQCGekpctIlgnw.dat
+-rw-r--r--. 1 elastic elastic   355 Mar  5 20:56 snap-04NT9A1qTQCGekpctIlgnw.dat
+```
+
 Удалите индекс `test` и создайте индекс `test-2`. **Приведите в ответе** список индексов.
 
+```bash
+iva@c8:~/Documents/ES/6.5+ $ curl -X PUT "localhost:9200/test-2?pretty" -H 'Content-Type: application/json' -d'
+> {
+>   "settings": {
+>     "index": {
+>       "number_of_replicas": 0,
+>       "number_of_shards": 1
+>     }
+>   }
+> }
+> '
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "test-2"
+}
+iva@c8:~/Documents/ES/6.5+ $ curl -k -X GET 'http://localhost:9200/_cat/indices?v'
+health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test-2 sqI9cnNfQ4afI38lYZx16w   1   0          0            0       225b           225b
+
+```
 [Восстановите](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshots-restore-snapshot.html) состояние
 кластера `elasticsearch` из `snapshot`, созданного ранее. 
 
 **Приведите в ответе** запрос к API восстановления и итоговый список индексов.
+
+```bash
+iva@c8:~/Documents/ES/6.5+ $ curl -X GET "http://localhost:9200/_snapshot/netology_backup/*?verbose=false&pretty"
+{
+  "snapshots" : [
+    {
+      "snapshot" : "three_snap",
+      "uuid" : "04NT9A1qTQCGekpctIlgnw",
+      "repository" : "netology_backup",
+      "indices" : [
+        ".geoip_databases",
+        "test"
+      ],
+      "data_streams" : [ ],
+      "state" : "SUCCESS"
+    }
+  ],
+  "total" : 1,
+  "remaining" : 0
+}
+iva@c8:~/Documents/ES/6.5+ $ curl -X POST http://localhost:9200/_snapshot/netology_backup/three_snap/_restore
+{"accepted":true}
+iva@c8:~/Documents/ES/6.5+ $ curl -k -X GET 'http://localhost:9200/_cat/indices?v'
+health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test-2 sqI9cnNfQ4afI38lYZx16w   1   0          0            0       225b           225b
+green  open   test   m5K-KOOSRZOWRhO7frhD7Q   1   0          0            0       225b           225b
+```
 
 Подсказки:
 - возможно вам понадобится доработать `elasticsearch.yml` в части директивы `path.repo` и перезапустить `elasticsearch`
 
 ---
 
-### Как cдавать задание
-
-Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
-
----
