@@ -323,6 +323,7 @@ green  open   test   m5K-KOOSRZOWRhO7frhD7Q   1   0          0            0     
 
 после изменения пути повторно пересозданы индексы и snapshot, 
 
+```bash
 iva@c8:~/Documents/ES/6.5+ $ docker exec -it busy_noether sh -c 'pwd && ls -la snapshots'
 /opt/elasticsearch-8.0.1
 total 32
@@ -359,6 +360,6 @@ iva@c8:~/Documents/ES/6.5+ $ curl -k -X GET 'http://localhost:9200/_cat/indices?
 health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   test-2 B__JK2ejT3WXxS2l9pEkrg   1   0          0            0       225b           225b
 green  open   test   V_9UzZYASz-3nayL2FZ78w   1   0          0            0       225b           225b
-
+```
 ---
 
