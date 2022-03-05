@@ -315,8 +315,50 @@ green  open   test-2 sqI9cnNfQ4afI38lYZx16w   1   0          0            0     
 green  open   test   m5K-KOOSRZOWRhO7frhD7Q   1   0          0            0       225b           225b
 ```
 
+
 Подсказки:
 - возможно вам понадобится доработать `elasticsearch.yml` в части директивы `path.repo` и перезапустить `elasticsearch`
+
+---
+
+после изменения пути повторно пересозданы индексы и snapshot, 
+
+iva@c8:~/Documents/ES/6.5+ $ docker exec -it busy_noether sh -c 'pwd && ls -la snapshots'
+/opt/elasticsearch-8.0.1
+total 32
+drwxr-xr-x. 1 elastic elastic   134 Mar  5 21:59 .
+drwxr-xr-x. 1 elastic elastic    49 Mar  5 21:48 ..
+-rw-r--r--. 1 elastic elastic   843 Mar  5 21:59 index-0
+-rw-r--r--. 1 elastic elastic     8 Mar  5 21:59 index.latest
+drwxr-xr-x. 4 elastic elastic    66 Mar  5 21:59 indices
+-rw-r--r--. 1 elastic elastic 17443 Mar  5 21:59 meta-9egGqFM4RZaBg8IWiO89mg.dat
+-rw-r--r--. 1 elastic elastic   355 Mar  5 21:59 snap-9egGqFM4RZaBg8IWiO89mg.dat
+
+iva@c8:~/Documents/ES/6.5+ $ curl -X GET "http://localhost:9200/_snapshot/netology_backup/*?verbose=false&pretty"
+{
+  "snapshots" : [
+    {
+      "snapshot" : "three_snap",
+      "uuid" : "9egGqFM4RZaBg8IWiO89mg",
+      "repository" : "netology_backup",
+      "indices" : [
+        ".geoip_databases",
+        "test"
+      ],
+      "data_streams" : [ ],
+      "state" : "SUCCESS"
+    }
+  ],
+  "total" : 1,
+  "remaining" : 0
+}
+
+iva@c8:~/Documents/ES/6.5+ $  curl -X POST http://localhost:9200/_snapshot/netology_backup/three_snap/_restore
+{"accepted":true}
+iva@c8:~/Documents/ES/6.5+ $ curl -k -X GET 'http://localhost:9200/_cat/indices?v'
+health status index  uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   test-2 B__JK2ejT3WXxS2l9pEkrg   1   0          0            0       225b           225b
+green  open   test   V_9UzZYASz-3nayL2FZ78w   1   0          0            0       225b           225b
 
 ---
 
