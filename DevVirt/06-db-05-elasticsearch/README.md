@@ -20,10 +20,81 @@
 
 В ответе приведите:
 - текст Dockerfile манифеста
+
+```bash
+iva@c8:~/Documents/ES $ cat Dockerfile
+ARG OS_VERSION=7
+ARG ES_VERSION=8.0.1
+
+FROM centos:$OS_VERSION
+
+ENV ES_VER=8.0.1
+ENV ES_HOME=/opt/elasticsearch-${ES_VER}
+ENV ES_JAVA_HOME=/opt/elasticsearch-${ES_VER}/jdk
+ENV ES_JAVA_OPTS="-Xms128m -Xmx128m"
+ENV PATH=$PATH:/opt/elasticsearch-${ES_VER}/bin
+
+RUN yum update -y --setopt=tsflags=nodocs && \
+yum install -y perl-Digest-SHA && \
+yum install -y wget && \
+rm -rf /var/cache/yum && \
+groupadd elastic && \
+useradd elastic -g elastic -p elasticsearch && \
+mkdir -p /var/lib/elasticsearch/logs && \
+mkdir -p /var/lib/elasticsearch/snapshots && \
+mkdir -p /var/lib/elasticsearch/data
+
+WORKDIR /opt
+
+RUN wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VER}-linux-x86_64.tar.gz && \
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ES_VER}-linux-x86_64.tar.gz.sha512 && \
+shasum -a 512 -c elasticsearch-${ES_VER}-linux-x86_64.tar.gz.sha512 && \
+tar -xzf elasticsearch-${ES_VER}-linux-x86_64.tar.gz && \
+rm elasticsearch-${ES_VER}-linux-x86_64.tar.gz && \
+chown -R elastic:elastic ${ES_HOME} && chown -R elastic:elastic /var/lib/elasticsearch
+
+ADD elasticsearch.yml ${ES_HOME}/config/elasticsearch.yml
+
+EXPOSE 9200 9300
+
+WORKDIR ${ES_HOME}
+
+USER elastic
+
+CMD ["elasticsearch"]
+```
+
+[DockerFile](./src/Dockerfile)
+
 - ссылку на образ в репозитории dockerhub
+
+[egerpro/elasticsearch:8.0.1](https://hub.docker.com/repository/docker/egerpro/elasticsearch)
+
 - ответ `elasticsearch` на запрос пути `/` в json виде
 
-curl -X GET "https://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=50s&pretty" --key certificates/elasticsearch-ca.pem  -k -u elasticuser
+```bash
+iva@c8:~/Documents/ES $ curl localhost:9200
+{
+  "name" : "netology_test",
+  "cluster_name" : "netology_test_cluster",
+  "cluster_uuid" : "hKQdGfh0SU6cCINEH6E4nA",
+  "version" : {
+    "number" : "8.0.1",
+    "build_flavor" : "default",
+    "build_type" : "tar",
+    "build_hash" : "801d9ccc7c2ee0f2cb121bbe22ab5af77a902372",
+    "build_date" : "2022-02-24T13:55:40.601285296Z",
+    "build_snapshot" : false,
+    "lucene_version" : "9.0.0",
+    "minimum_wire_compatibility_version" : "7.17.0",
+    "minimum_index_compatibility_version" : "7.0.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+
+при использовании ssl:
+curl -X GET "https://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=50s&pretty" --key certificates/elasticsearch-ca.pem  -k -u elastic
 
 Подсказки:
 - возможно вам понадобится установка пакета perl-Digest-SHA для корректной работы пакета shasum
