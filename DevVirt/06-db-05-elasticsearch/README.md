@@ -66,6 +66,8 @@ CMD ["elasticsearch"]
 
 [DockerFile](./src/Dockerfile)
 
+[elasticsearch.yml](./src/elasticsearch.yml)
+
 - ссылку на образ в репозитории dockerhub
 
 [egerpro/elasticsearch:8.0.1](https://hub.docker.com/repository/docker/egerpro/elasticsearch)
@@ -122,11 +124,62 @@ curl -X GET "https://localhost:9200/_cluster/health?wait_for_status=yellow&timeo
 
 Получите список индексов и их статусов, используя API и **приведите в ответе** на задание.
 
+```bash
+iva@c8:~/Documents/ES/6.5+ $ curl -k -X GET 'http://localhost:9200/_cat/indices?v'
+health status index uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   ind-1 UZ-IFhpOS5C9nl36Xfjkrw   1   0          0            0       225b           225b
+yellow open   ind-3 JwlnrqswSbW_p_bq0kZy-g   4   2          0            0       900b           900b
+yellow open   ind-2 QcbBo_t5RgSHzyLY5WXWJQ   2   1          0            0       450b           450b
+```
+
 Получите состояние кластера `elasticsearch`, используя API.
+
+```bash
+iva@c8:~/Documents/ES/6.5+ $ curl localhost:9200/_cluster/health | python3 -m json.tool
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   411  100   411    0     0   200k      0 --:--:-- --:--:-- --:--:--  200k
+{
+    "cluster_name": "netology_test_cluster",
+    "status": "yellow",
+    "timed_out": false,
+    "number_of_nodes": 1,
+    "number_of_data_nodes": 1,
+    "active_primary_shards": 8,
+    "active_shards": 8,
+    "relocating_shards": 0,
+    "initializing_shards": 0,
+    "unassigned_shards": 10,
+    "delayed_unassigned_shards": 0,
+    "number_of_pending_tasks": 0,
+    "number_of_in_flight_fetch": 0,
+    "task_max_waiting_in_queue_millis": 0,
+    "active_shards_percent_as_number": 44.44444444444444
+}
+```
 
 Как вы думаете, почему часть индексов и кластер находится в состоянии yellow?
 
+Поскольку кластер состоит из одной ноды, шарды индексов ind-2 и ind-3 не реплицированы и находятся в статусе unssigned. После добавления дополнительных нод в кластер на которые они смогут реплицироваться статус их изменится на GREEN, кластер так же сменит статус после репликации.
+
+
 Удалите все индексы.
+
+```bash
+iva@c8:~/Documents/ES/6.5+ $ curl -X DELETE "localhost:9200/ind-1?pretty"
+{
+  "acknowledged" : true
+}
+iva@c8:~/Documents/ES/6.5+ $ curl -X DELETE "localhost:9200/ind-2?pretty"
+{
+  "acknowledged" : true
+}
+iva@c8:~/Documents/ES/6.5+ $ curl -X DELETE "localhost:9200/ind-3?pretty"
+{
+  "acknowledged" : true
+}
+
+```
 
 **Важно**
 
