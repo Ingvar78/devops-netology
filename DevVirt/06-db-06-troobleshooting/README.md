@@ -13,9 +13,10 @@
 Вы как инженер поддержки решили произвести данную операцию:
 - напишите список операций, которые вы будете производить для остановки запроса пользователя
 
-```
->1. Вычислить проблемные запросы в mongo-shell в ответе найти нужный query, для этого необходимо выполнить следующий запрос [db.currentOn()](https://docs.mongodb.com/manual/reference/method/db.currentOp/):
 
+1. Вычислить проблемные запросы в mongo-shell в ответе найти нужный query, для этого необходимо выполнить следующий запрос [db.currentOn()](https://docs.mongodb.com/manual/reference/method/db.currentOp/):
+
+```
 db.currentOp(
    {
      "active" : true,
@@ -23,23 +24,10 @@ db.currentOp(
    }
 )
 
+```
 
->В ответ будет получен список операций которые выполнялись более 3 минут
+В ответ будет получен список операций которые выполнялись более 3 минут
 
->Возможно CRUD-операция ожидает завершения блокировки
-
-db.currentOp(
-   {
-     "waitingForLock" : true,
-     $or: [
-        { "op" : { "$in" : [ "insert", "update", "remove" ] } },
-        { "command.findandmodify": { $exists: true } }
-    ]
-   }
-)
-
-
-----
 {
   "inprog": [
        {
@@ -63,14 +51,30 @@ db.currentOp(
    "info": <string>,
     "ok": <num>
 }
+```
 
->2. Принудительно удалить подвисшую сессию, определив причину (https://docs.mongodb.com/manual/tutorial/terminate-running-operations/#killop)
-
-db.killOp(<opid>)
-
->где opid - номер зависшей операции
+Возможно CRUD-операция ожидает завершения блокировки
 
 ```
+db.currentOp(
+   {
+     "waitingForLock" : true,
+     $or: [
+        { "op" : { "$in" : [ "insert", "update", "remove" ] } },
+        { "command.findandmodify": { $exists: true } }
+    ]
+   }
+)
+
+```
+
+2. Принудительно удалить подвисшую сессию, определив причину (https://docs.mongodb.com/manual/tutorial/terminate-running-operations/#killop)
+
+```
+db.killOp(<opid>)
+```
+где <opid> - номер зависшей операции
+
 
 - предложите вариант решения проблемы с долгими (зависающими) запросами в MongoDB
 
