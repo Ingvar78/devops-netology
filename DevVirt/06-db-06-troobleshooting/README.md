@@ -7,20 +7,78 @@
 Пользователь (разработчик) написал в канал поддержки, что у него уже 3 минуты происходит CRUD операция в MongoDB и её 
 нужно прервать. 
 
+>CRUD операции - создание (create), чтение (read), обновление (update) и удаление (delete).
+[MongoDB CRUD Operations](https://docs.mongodb.com/manual/crud/)
+
 Вы как инженер поддержки решили произвести данную операцию:
 - напишите список операций, которые вы будете производить для остановки запроса пользователя
 
 ```
-1. Вычислить проблемные запросы в mongo-shell в ответе найти нужный query
+1. Вычислить проблемные запросы в mongo-shell в ответе найти нужный query, для этого необходимо выполнить следующий запрос [db.currentOn()](https://docs.mongodb.com/manual/reference/method/db.currentOp/):
 
-2. Удалить подвисшую сессию 
+db.currentOp(
+   {
+     "active" : true,
+     "secs_running" : { "$gt" : 180 }
+   }
+)
+
+в ответ будет получен список операций которые выполнялись более 3 минут
+
+возможно CRUD-операция ожидает завершения блокировки
+
+db.currentOp(
+   {
+     "waitingForLock" : true,
+     $or: [
+        { "op" : { "$in" : [ "insert", "update", "remove" ] } },
+        { "command.findandmodify": { $exists: true } }
+    ]
+   }
+)
+
+
+----
+{
+  "inprog": [
+       {
+	...
+         "active" : <boolean>,
+         "currentOpTime" : <string>,
+         "effectiveUsers" : [
+            {
+               "user" : <string>,
+               "db" : <string>
+            }
+         ],
+         ...
+         "opid" : <number>,
+         "secs_running" : <NumberLong()>,
+       ...
+       "command" : <document>,
+       ...
+   ],
+   "fsyncLock": <boolean>,
+   "info": <string>,
+    "ok": <num>
+}
+
+2. Принудительно удалить подвисшую сессию, определив причину (https://docs.mongodb.com/manual/tutorial/terminate-running-operations/#killop)
+
+   ```
+   db.killOp(<opid>)
+   ```
 
 ```
 
 - предложите вариант решения проблемы с долгими (зависающими) запросами в MongoDB
 
 ```
-построить план запроса зависшей операции
+1. Использовать метод maxTimeMS() для ограничения времени выполнения операций 
+2. Используя Database Profiler, отловить медленные операции.
+3. Провести анализ плана выполнения запроса черезе [ explain("executionStats" ](https://docs.atlas.mongodb.com/atlas-search/explain/)
+4. Провести оптимизацию: добавить/скорректировать/удалить индексы, настроить шардинг и т.д.
+
 ```
 
 ## Задача 2
