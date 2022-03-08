@@ -134,7 +134,7 @@ InterfaceError: (InterfaceError) 2013: Lost connection to MySQL server during qu
 При исчезновении ошибки определить пороговые значения изменённых переменных при которых приложение работает стабильно, т.к. простое увеличение данных параметров может повлиять на работу приложений в целом.
 
 
-[Решение ошибки через увеличение timeout с default-ных значений] (https://stackoverflow.com/questions/49622416/interfaceerror-2013-lost-connection-to-mysql-server-during-query)
+[Решение ошибки через увеличение timeout с default-ных значений](https://stackoverflow.com/questions/49622416/interfaceerror-2013-lost-connection-to-mysql-server-during-query)
 
 
 ## Задача 4
