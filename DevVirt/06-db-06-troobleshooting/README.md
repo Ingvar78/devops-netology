@@ -156,6 +156,8 @@ InterfaceError: (InterfaceError) 2013: Lost connection to MySQL server during qu
 
 [Настройка на уровне ОС](https://www.postgresql.org/docs/9.3/kernel-resources.html)
 
+[Чрезмерное выделение памяти в Linux](https://postgrespro.ru/docs/postgrespro/9.6/kernel-resources)
+
 >Если памяти не хватает по вине самого PostgresSQL, эту проблему можно решить, изменив конфигурацию сервера. 
 В некоторых случаях может помочь уменьшение конфигурационных параметров, связанных с памятью, а именно shared_buffers и work_mem. 
 В других случаях проблема может возникать, потому что разрешено слишком много подключений к самому серверу баз данных. Чаще всего в такой ситуации стоит уменьшить число подключений max_connections и организовать внешний пул соединений. 
