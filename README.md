@@ -80,9 +80,9 @@
 
 6.4. [x] [PostgreSQL](DevVirt/06-db-04-postgresql)
 
-6.5. [Elasticsearch](DevVirt/06-db-05-elasticsearch)
+6.5. [x] [Elasticsearch](DevVirt/06-db-05-elasticsearch)
 
-6.6. [Troubleshooting](DevVirt/06-db-06-troobleshooting)
+6.6. [x] [Troubleshooting](DevVirt/06-db-06-troobleshooting)
 
 
 ## Модуль 7. Облачная инфраструктура. Terraform
