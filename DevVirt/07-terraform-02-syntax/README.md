@@ -103,7 +103,7 @@ versions.tf
 
 ```
 <details>
-     <summary>Процесс создания с использованием Terraform</summary>
+     <summary>terraform plan</summary>
     <br>
 
 ```bash
@@ -124,7 +124,7 @@ Terraform will perform the following actions:
       + id                        = (known after apply)
       + metadata                  = {
           + "ssh-keys" = <<-EOT
-                centos:ssh-rsa AAAAB3Nza<cut></cut>@c8.localdomain
+                centos:ssh-rsa AAAAB3Nza<cut></cut>
             EOT
         }
       + name                      = "netology-c8"
@@ -214,10 +214,18 @@ Changes to Outputs:
   + yandex_vpc_subnet = (known after apply)
   + yandex_zone       = (known after apply)
 
-───────────────────────────────────────────────────────────────────────────────
+───────────────────────────────────────────────────────────────────────────────────────
 
-Note: You didn't use the -out option to save this plan, so Terraform can't
-guarantee to take exactly these actions if you run "terraform apply" now.
+Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to
+take exactly these actions if you run "terraform apply" now.
+
+```
+</details>
+
+<details>
+     <summary>terraform apply</summary>
+    <br>
+```bash
 iva@c8:~/Documents/72_! $ terraform apply
 
 Terraform used the selected providers to generate the following execution plan.
@@ -235,7 +243,7 @@ Terraform will perform the following actions:
       + id                        = (known after apply)
       + metadata                  = {
           + "ssh-keys" = <<-EOT
-                centos:ssh-rsa AAAAB3Nza<cut></cut.localdomain
+                centos:ssh-rsa AAAAB3Nza<cut></cut>
             EOT
         }
       + name                      = "netology-c8"
@@ -332,23 +340,22 @@ Do you want to perform these actions?
   Enter a value: yes
 
 yandex_vpc_network.vpcnet: Creating...
-yandex_vpc_network.vpcnet: Creation complete after 1s [id=enpllt421nm9ulpjs3qv]
+yandex_vpc_network.vpcnet: Creation complete after 1s [id=enpprmeooneh749j1hmv]
 yandex_vpc_subnet.vpcsubnet: Creating...
-yandex_vpc_subnet.vpcsubnet: Creation complete after 1s [id=e9b2b5lcvjlmmklp7aao]
+yandex_vpc_subnet.vpcsubnet: Creation complete after 1s [id=e9b9364nkc1jvaebbou4]
 yandex_compute_instance.vm: Creating...
 yandex_compute_instance.vm: Still creating... [10s elapsed]
 yandex_compute_instance.vm: Still creating... [20s elapsed]
-yandex_compute_instance.vm: Creation complete after 22s [id=fhmm38julvndup4kn6qo]
+yandex_compute_instance.vm: Creation complete after 26s [id=fhmivec4tkq73rotbcdj]
 
 Apply complete! Resources: 3 added, 0 changed, 0 destroyed.
 
 Outputs:
 
-yandex_ip_nat = "178.154.201.176"
-yandex_ip_private = "10.2.0.32"
-yandex_vpc_subnet = "e9b2b5lcvjlmmklp7aao"
+yandex_ip_nat = "51.250.11.234"
+yandex_ip_private = "10.2.0.25"
+yandex_vpc_subnet = "e9b9364nkc1jvaebbou4"
 yandex_zone = "ru-central1-a"
-
 ```
 </details>
 
@@ -362,40 +369,44 @@ yandex_zone = "ru-central1-a"
     [конфигурация terraform](./src/)
 
 
-![Screenshot](./img/apply.png)
-
 ![Screenshot](./img/plan.png)
 
-![Screenshot](./img/ya_vm.png)
+![Screenshot](./img/apply.png)
+
+![Screenshot](./img/yandex_vm.png)
+
+![Screenshot](./img/destroy.png)
+
 
 ---
 
 <details>
-     <summary>Процесс удаления</summary>
+     <summary>terraform destroy</summary>
     <br>
 
 ```bash
 iva@c8:~/Documents/72_! $ terraform destroy
-yandex_vpc_network.vpcnet: Refreshing state... [id=enpllt421nm9ulpjs3qv]
-yandex_vpc_subnet.vpcsubnet: Refreshing state... [id=e9b2b5lcvjlmmklp7aao]
-yandex_compute_instance.vm: Refreshing state... [id=fhmm38julvndup4kn6qo]
+yandex_vpc_network.vpcnet: Refreshing state... [id=enpprmeooneh749j1hmv]
+yandex_vpc_subnet.vpcsubnet: Refreshing state... [id=e9b9364nkc1jvaebbou4]
+yandex_compute_instance.vm: Refreshing state... [id=fhmivec4tkq73rotbcdj]
 
-Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+Terraform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
   - destroy
 
 Terraform will perform the following actions:
 
   # yandex_compute_instance.vm will be destroyed
   - resource "yandex_compute_instance" "vm" {
-      - created_at                = "2022-03-20T20:51:14Z" -> null
+      - created_at                = "2022-03-20T21:19:55Z" -> null
       - folder_id                 = "b1gm6im3mcuc36r6kn8s" -> null
       - fqdn                      = "netology_c8.local" -> null
       - hostname                  = "netology_c8" -> null
-      - id                        = "fhmm38julvndup4kn6qo" -> null
+      - id                        = "fhmivec4tkq73rotbcdj" -> null
       - labels                    = {} -> null
       - metadata                  = {
           - "ssh-keys" = <<-EOT
-                centos:ssh-rsa AAAAB3Nza<cut></cut>@c8.localdomain
+                centos:ssh-rsa AAAAB3Nz<cut></cut>
             EOT
         } -> null
       - name                      = "netology-c8" -> null
@@ -406,8 +417,8 @@ Terraform will perform the following actions:
 
       - boot_disk {
           - auto_delete = true -> null
-          - device_name = "fhmei72n4j255j94efm7" -> null
-          - disk_id     = "fhmei72n4j255j94efm7" -> null
+          - device_name = "fhmercsvg66hg2mk3u37" -> null
+          - disk_id     = "fhmercsvg66hg2mk3u37" -> null
           - mode        = "READ_WRITE" -> null
 
           - initialize_params {
@@ -420,15 +431,15 @@ Terraform will perform the following actions:
 
       - network_interface {
           - index              = 0 -> null
-          - ip_address         = "10.2.0.32" -> null
+          - ip_address         = "10.2.0.25" -> null
           - ipv4               = true -> null
           - ipv6               = false -> null
-          - mac_address        = "d0:0d:16:1a:27:ea" -> null
+          - mac_address        = "d0:0d:12:fb:98:4e" -> null
           - nat                = true -> null
-          - nat_ip_address     = "178.154.201.176" -> null
+          - nat_ip_address     = "51.250.11.234" -> null
           - nat_ip_version     = "IPV4" -> null
           - security_group_ids = [] -> null
-          - subnet_id          = "e9b2b5lcvjlmmklp7aao" -> null
+          - subnet_id          = "e9b9364nkc1jvaebbou4" -> null
         }
 
       - placement_policy {}
@@ -447,24 +458,24 @@ Terraform will perform the following actions:
 
   # yandex_vpc_network.vpcnet will be destroyed
   - resource "yandex_vpc_network" "vpcnet" {
-      - created_at = "2022-03-20T20:51:12Z" -> null
+      - created_at = "2022-03-20T21:19:53Z" -> null
       - folder_id  = "b1gm6im3mcuc36r6kn8s" -> null
-      - id         = "enpllt421nm9ulpjs3qv" -> null
+      - id         = "enpprmeooneh749j1hmv" -> null
       - labels     = {} -> null
       - name       = "vpcnet" -> null
       - subnet_ids = [
-          - "e9b2b5lcvjlmmklp7aao",
+          - "e9b9364nkc1jvaebbou4",
         ] -> null
     }
 
   # yandex_vpc_subnet.vpcsubnet will be destroyed
   - resource "yandex_vpc_subnet" "vpcsubnet" {
-      - created_at     = "2022-03-20T20:51:13Z" -> null
+      - created_at     = "2022-03-20T21:19:54Z" -> null
       - folder_id      = "b1gm6im3mcuc36r6kn8s" -> null
-      - id             = "e9b2b5lcvjlmmklp7aao" -> null
+      - id             = "e9b9364nkc1jvaebbou4" -> null
       - labels         = {} -> null
       - name           = "vpcsubnet" -> null
-      - network_id     = "enpllt421nm9ulpjs3qv" -> null
+      - network_id     = "enpprmeooneh749j1hmv" -> null
       - v4_cidr_blocks = [
           - "10.2.0.0/24",
         ] -> null
@@ -475,9 +486,9 @@ Terraform will perform the following actions:
 Plan: 0 to add, 0 to change, 3 to destroy.
 
 Changes to Outputs:
-  - yandex_ip_nat     = "178.154.201.176" -> null
-  - yandex_ip_private = "10.2.0.32" -> null
-  - yandex_vpc_subnet = "e9b2b5lcvjlmmklp7aao" -> null
+  - yandex_ip_nat     = "51.250.11.234" -> null
+  - yandex_ip_private = "10.2.0.25" -> null
+  - yandex_vpc_subnet = "e9b9364nkc1jvaebbou4" -> null
   - yandex_zone       = "ru-central1-a" -> null
 
 Do you really want to destroy all resources?
@@ -486,16 +497,14 @@ Do you really want to destroy all resources?
 
   Enter a value: yes
 
-yandex_compute_instance.vm: Destroying... [id=fhmm38julvndup4kn6qo]
-yandex_compute_instance.vm: Still destroying... [id=fhmm38julvndup4kn6qo, 10s elapsed]
-yandex_compute_instance.vm: Destruction complete after 11s
-yandex_vpc_subnet.vpcsubnet: Destroying... [id=e9b2b5lcvjlmmklp7aao]
-yandex_vpc_subnet.vpcsubnet: Destruction complete after 5s
-yandex_vpc_network.vpcnet: Destroying... [id=enpllt421nm9ulpjs3qv]
-yandex_vpc_network.vpcnet: Destruction complete after 1s
+yandex_compute_instance.vm: Destroying... [id=fhmivec4tkq73rotbcdj]
+yandex_compute_instance.vm: Still destroying... [id=fhmivec4tkq73rotbcdj, 10s elapsed]
+yandex_compute_instance.vm: Destruction complete after 12s
+yandex_vpc_subnet.vpcsubnet: Destroying... [id=e9b9364nkc1jvaebbou4]
+yandex_vpc_subnet.vpcsubnet: Destruction complete after 2s
+yandex_vpc_network.vpcnet: Destroying... [id=enpprmeooneh749j1hmv]
+yandex_vpc_network.vpcnet: Destruction complete after 0s
 
 Destroy complete! Resources: 3 destroyed.
-iva@c8:~/Documents/72_! $ 
-
 ```
 </details>
