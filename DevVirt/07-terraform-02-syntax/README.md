@@ -511,3 +511,10 @@ yandex_vpc_network.vpcnet: Destruction complete after 0s
 Destroy complete! Resources: 3 destroyed.
 ```
 </details>
+
+_______________________________________________________________________________________
+
+
+[полезные ссылки](https://www.devopsschool.com/pdf/terraform/slides/)
+
+[Yandex.Cloud Provide](https://www.devopsschool.com/pdf/terraform/slides/Complete-Terraform-documentation/yandex.pdf)
