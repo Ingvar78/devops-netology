@@ -100,8 +100,8 @@ iva@c8:~/Documents/72_! $ terraform fmt
 main.tf
 outputs.tf
 versions.tf
-
 ```
+
 <details>
      <summary>terraform plan</summary>
     <br>
@@ -225,6 +225,7 @@ take exactly these actions if you run "terraform apply" now.
 <details>
      <summary>terraform apply</summary>
     <br>
+
 ```bash
 iva@c8:~/Documents/72_! $ terraform apply
 
@@ -357,7 +358,9 @@ yandex_ip_private = "10.2.0.25"
 yandex_vpc_subnet = "e9b9364nkc1jvaebbou4"
 yandex_zone = "ru-central1-a"
 ```
+
 </details>
+
 
 В качестве результата задания предоставьте:
 1. Ответ на вопрос: при помощи какого инструмента (из разобранных на прошлом занятии) можно создать свой образ ami?
