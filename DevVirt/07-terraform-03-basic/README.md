@@ -12,6 +12,10 @@
 
 Ввиду имеющихся текущих ограничений на aws, работы проводились на yandex.cloud.
 
+<details>
+     <summary>terraform buckets</summary>
+    <br>
+
 ```bash
 
 iva@c9:~/Documents/YC $ yc iam access-key create --service-account-name neto-robot
@@ -105,6 +109,8 @@ iva@c9:~/Documents/tf $ terraform workspace list
   stage
 
 ```
+</details>
+
 
 После инициализации s3 и создания workspace - в Object storage создается переменная с соответсвующими путями neto-ingvar78/env:stage и neto-ingvar78/env:prod. В зависимости от текущего workspace данные state сохранятся в одноимённой директории 
 
