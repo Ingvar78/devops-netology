@@ -89,13 +89,13 @@
 
 7.1. [x] [Конфигурация как код](DevVirt/07-terraform-01-intro)
 
-7.2. [Облачные провайдеры и синтаксис Терраформ](DevVirt/07-terraform-02-syntax)
+7.2. [x] [Облачные провайдеры и синтаксис Терраформ](DevVirt/07-terraform-02-syntax)
 
-7.3. [Основы и принцип работы Терраформ](DevVirt/07-terraform-03-basic)
+7.3. [x] [Основы и принцип работы Терраформ](DevVirt/07-terraform-03-basic)
 
 7.4. [Средства командной работы над инфраструктурой](DevVirt/07-terraform-04-teamwork)
 
-7.5. [Введение в Golang](DevVirt/07-terraform-05-golang)
+7.5. [x] [Введение в Golang](DevVirt/07-terraform-05-golang)
 
 7.6. [Написание собственных провайдеров для Terraform](DevVirt/07-terraform-06-providers)
 
