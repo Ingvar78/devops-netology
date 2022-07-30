@@ -104,3 +104,5 @@
 1. [Модуль 6. Администрирование баз данных](https://github.com/netology-code/virt-homeworks/tree/master/additional)
 
 1. [Вторая часть: Домашние задания по курсу «CI, мониторинг и управление конфигурациями»](https://github.com/Ingvar78/devops-mnt)
+
+1. [Третья часть: Администрирование и конфигурация Kubernetes](https://github.com/Ingvar78/devkub-netology)
